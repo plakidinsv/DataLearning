@@ -20,5 +20,6 @@ Beginning date and end date of stage are stors.
 
 
 ***Tools and enviropment***
+
 Database bookstore has built on local machine.
 Accsess and manipulating - from local machine and remote machine using DBeaver(PostgreSQL db), MySQL but mainly VSCode (Weijan Chen's extension).
