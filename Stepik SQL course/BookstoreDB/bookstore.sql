@@ -210,31 +210,17 @@ ORDER BY client.name ASC;
 
 /* Find best sellers genre/genres, show number of sells*/
 
-SELECT a.name_genre, SUM(amount) as 'Количество'
-FROM 
-        (SELECT *
-        from genre
-        JOIN book USING(genre_id)
-        JOIN buy_book USING(book_id)) as a
-WHERE a.genre_id IN (SELECT genre_id
-                   FROM (SELECT *
-                        from genre
-                        JOIN book USING(genre_id)
-                        JOIN buy_book USING(book_id)) as c
-                   GROUP BY genre_id
-                   HAVING max(sum(amount))
-                   ) ;
-        
-        (SELECT q.book_id 
-        FROM
-                (SELECT buy_book.book_id, SUM(buy_book.amount) as summ
-                FROM buy_book
-                GROUP BY book_id) as q
-        JOIN
-                (SELECT SUM(buy_book.amount) as summ
-                FROM buy_book
-                GROUP BY book_id
-                ORDER BY 1 DESC
-                LIMIT 1) as q1
-        USING(summ));
-
+SELECT genre.name_genre,
+        SUM(buy_book.amount) AS 'Количество'
+FROM genre
+    JOIN book USING(genre_id)
+    JOIN buy_book USING(book_id)
+GROUP BY genre.name_genre
+HAVING SUM(buy_book.amount) =  
+       (select max(sum_amount) as max_sum_amount
+       from
+           (select genre_id, sum(buy_book.amount) as sum_amount
+            from book 
+                JOIN buy_book USING(book_id)
+             group by genre_id) as tmp)
+    
