@@ -19,6 +19,6 @@ Beginning date and end date of stage are stors.
 6. При этом в магазине ведется учет книг, при покупке их количество уменьшается, при поступлении товара увеличивается, при исчерпании количества – оформляется заказ и пр.
 
 
-***Tools and enviropment*
+***Tools and enviropment***
 Database bookstore has built on local machine.
 Accsess and manipulating - from local machine and remote machine using DBeaver(PostgreSQL db), MySQL but mainly VSCode (Weijan Chen's extension).
