@@ -237,6 +237,7 @@ Names of columns: Year, Month, Summ.
 
 /* Information about orders in previous years stored in buy_archive layer
 */
+
 DROP TABLE IF EXISTS buy_archive;
 CREATE TABLE buy_archive
 (
@@ -260,3 +261,84 @@ VALUES (2, 1, 1, '2019-02-21', 2, 670.60),
        (4, 1, 6, '2019-03-12', 1, 650.00),
        (5, 2, 1, '2019-03-18', 2, 670.60),
        (5, 2, 4, '2019-03-18', 1, 780.90);
+
+
+-- select revenue per month for previous year
+
+SELECT YEAR(ba.date_payment) AS 'Year',
+       MONTHNAME(ba.date_payment) AS 'Month',
+       SUM(ba.price * ba.amount) AS 'Revenue'
+FROM buy_archive AS ba
+GROUP BY 1, 2;
+
+-- select revenue per month for current year
+
+select YEAR(date_step_end) AS 'Year',
+        MONTHNAME(date_step_end) AS 'Month',
+        SUM(price * buy_book.amount) AS 'Стоимость'
+from step
+INNER JOIN buy_step USING(step_id)
+INNER JOIN buy USING(buy_id)
+INNER JOIN buy_book USING(buy_id)
+INNER JOIN book USING(book_id)
+WHERE name_step = 'Оплата' AND date_step_end IS NOT NULL
+GROUP BY 1, 2;
+
+-- union two results
+
+SELECT YEAR(ba.date_payment) AS 'Year',
+       MONTHNAME(ba.date_payment) AS 'Month',
+       SUM(ba.price * ba.amount) AS 'Revenue'
+FROM buy_archive AS ba
+GROUP BY 1, 2
+UNION 
+select YEAR(date_step_end) AS 'Year',
+        MONTHNAME(date_step_end) AS 'Month',
+        SUM(price * buy_book.amount) AS 'Стоимость'
+from step
+INNER JOIN buy_step USING(step_id)
+INNER JOIN buy USING(buy_id)
+INNER JOIN buy_book USING(buy_id)
+INNER JOIN book USING(book_id)
+WHERE name_step = 'Оплата' AND date_step_end IS NOT NULL
+GROUP BY 1, 2
+ORDER BY 2, 1;
+
+/* Show information about quantity and revenue per book in 
+past and current year.
+Aggregated columns must be named as Quantity as Revenue.
+Information must be sorted by revenue from higher to lower.
+
+Для каждой отдельной книги необходимо вывести информацию 
+о количестве проданных экземпляров и их стоимости за текущий 
+и предыдущий год . 
+Вычисляемые столбцы назвать Количество и Сумма. 
+Информацию отсортировать по убыванию стоимости.
+*/
+
+SELECT title, 
+    SUM(united.amount) as quantity, 
+    SUM(united.revenue) as revenue
+FROM book
+JOIN 
+    (SELECT book_id, 
+            amount, 
+            price* amount as revenue
+    FROM buy_archive
+
+    union all
+
+    SELECT book_id,
+            buy_book.amount,
+            price * buy_book.amount AS revenue
+    FROM book
+    INNER JOIN buy_book USING(book_id)
+    INNER join buy USING(buy_id)
+    INNER join buy_step USING(buy_id)
+    INNER join step using(step_id)
+    WHERE step.name_step = 'Оплата'
+        AND date_step_end is not null
+    ) AS united
+    USING(book_id)
+GROUP BY title
+ORDER BY Сумма DESC; 
