@@ -17,3 +17,7 @@ Beginning date and end date of stage are stors.
 4. Затем заказ проходит ряд последовательных этапов (операций): оплачивается, упаковывается, передается курьеру или транспортной компании для транспортировки и, наконец, доставляется покупателю. Фиксируется дата каждой операции. 
 5. Для каждого города известно среднее время доставки книг.
 6. При этом в магазине ведется учет книг, при покупке их количество уменьшается, при поступлении товара увеличивается, при исчерпании количества – оформляется заказ и пр.
+
+
+Database bookstore has built on local machine.
+Accsess and manipulating - from local machine and remote machine using DBeaver(PostgreSQL db), MySQL but mainly VSCode (Weijan Chen's extension).
