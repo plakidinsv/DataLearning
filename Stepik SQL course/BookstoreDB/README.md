@@ -1,3 +1,14 @@
+Online book-store database mini project.
+
+1. Each book has title, written by the only author, has the only genre and has a price. There are a more than 1 book in the store.
+2. Client regisrers on site of store and provide its first and second name, email, city.
+Client might made a multiple orders and write commentary for each order(optional).
+3. Each order has 1 or more books, which might be ordered in any quantity.
+4. Each order goes through few stages (payment, packing, hand to courier, transportation.
+Beginning date and end date of stage are stors.
+5. Every city has time dilivery.
+6. Bookstore controlls number of books (it decreases when someone buy book, increases when books delivers to the store).
+
 В интернет-магазине продаются книги. Каждая книга имеет название, написана одним автором, относится к одному жанру, имеет определенную цену. В магазине в наличии есть несколько экземпляров каждой книги. 
 
 Покупатель регистрируется на сайте интернет-магазина, задает свое имя и фамилию, электронную почту и город проживания. Он может сформировать один или несколько заказов, для каждого заказа написать какие-то пожелания. Каждый заказ включает одну или несколько книг, каждую книгу можно заказать в нескольких экземплярах. Затем заказ проходит ряд последовательных этапов (операций): оплачивается, упаковывается, передается курьеру или транспортной компании для транспортировки и, наконец, доставляется покупателю. Фиксируется дата каждой операции. Для каждого города известно среднее время доставки книг.
