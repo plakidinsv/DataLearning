@@ -225,7 +225,18 @@ HAVING SUM(buy_book.amount) =
              group by genre_id) as tmp)
     
 
+/* Compare monthly revenue for current and previous years.
+Show year, month, total proceed sorted by month, than year ASC.
+Names of columns: Year, Month, Summ.
 
+Сравнить ежемесячную выручку от продажи книг за текущий и предыдущий годы. 
+Для этого вывести год, месяц, сумму выручки в отсортированном сначала по 
+возрастанию месяцев, затем по возрастанию лет виде.
+ Название столбцов: Год, Месяц, Сумма
+*/
+
+/* Information about orders in previous years stored in buy_archive layer
+*/
 DROP TABLE IF EXISTS buy_archive;
 CREATE TABLE buy_archive
 (
