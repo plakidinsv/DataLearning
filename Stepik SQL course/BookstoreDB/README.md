@@ -1,5 +1,6 @@
-## Online book-store database mini project.
+## Online book-store database mini project
 
+** Descraibing
 1. Each book has title, written by the only author, has the only genre and has a price. There are a more than 1 book in the store.
 2. Client regisrers on site of store and provide its first and second name, email, city.
 Client might made a multiple orders and write commentary for each order(optional).
