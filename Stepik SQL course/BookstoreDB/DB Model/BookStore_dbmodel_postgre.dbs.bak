@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="BookStore" id="Project-1bcf" database="PostgreSQL" >
+	<schema name="bookstore" >
+		<table name="author" prior="tbl" >
+			<column name="author_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="name_author" type="varchar" length="100" jt="12" />
+			<index name="pk_author" unique="PRIMARY_KEY" >
+				<column name="author_id" />
+			</index>
+		</table>
+		<table name="book" prior="tbl" generator_rows="100" >
+			<column name="book_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="title" type="varchar" length="50" jt="12" />
+			<column name="price" type="decimal" length="8" decimal="2" jt="3" />
+			<column name="amount" type="integer" jt="4" />
+			<column name="author_id" type="integer" jt="4" mandatory="y" />
+			<column name="genre_id" type="integer" jt="4" mandatory="y" />
+			<index name="pk_book" unique="PRIMARY_KEY" >
+				<column name="book_id" />
+			</index>
+			<index name="unq_book_author_id" unique="UNIQUE_KEY" >
+				<column name="author_id" />
+			</index>
+			<index name="unq_book_genre_id" unique="UNIQUE_KEY" >
+				<column name="genre_id" />
+			</index>
+			<fk name="fk_book_author" to_schema="bookstore" to_table="author" delete_action="cascade" >
+				<fk_column name="author_id" pk="author_id" />
+			</fk>
+			<fk name="fk_book_genre" to_schema="bookstore" to_table="genre" delete_action="cascade" >
+				<fk_column name="genre_id" pk="genre_id" />
+			</fk>
+		</table>
+		<table name="buy" prior="tbl" >
+			<column name="buy_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="buy_description" type="varchar" length="100" jt="12" />
+			<column name="client_id" type="integer" jt="4" mandatory="y" />
+			<index name="pk_buy" unique="PRIMARY_KEY" >
+				<column name="buy_id" />
+			</index>
+			<index name="unq_buy_client_id" unique="UNIQUE_KEY" >
+				<column name="client_id" />
+			</index>
+			<fk name="fk_buy_client" to_schema="bookstore" to_table="client" >
+				<fk_column name="client_id" pk="client_id" />
+			</fk>
+		</table>
+		<table name="buy_book" prior="tbl" >
+			<column name="buy_book_id" prior="book_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="amount" type="integer" jt="4" />
+			<column name="buy_id" type="integer" jt="4" mandatory="y" />
+			<column name="book_id" type="integer" jt="4" mandatory="y" />
+			<index name="pk_buy_book" unique="PRIMARY_KEY" >
+				<column name="buy_book_id" />
+			</index>
+			<index name="unq_buy_book_buy_id" unique="UNIQUE_KEY" >
+				<column name="buy_id" />
+			</index>
+			<index name="unq_buy_book_book_id" unique="UNIQUE_KEY" >
+				<column name="book_id" />
+			</index>
+			<fk name="fk_buy_book_book" to_schema="bookstore" to_table="book" >
+				<fk_column name="book_id" pk="book_id" />
+			</fk>
+			<fk name="fk_buy_book_buy" to_schema="bookstore" to_table="buy" >
+				<fk_column name="buy_id" pk="buy_id" />
+			</fk>
+		</table>
+		<table name="buy_step" prior="tbl" >
+			<column name="buy_step_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="date_step_beg" type="date" jt="91" />
+			<column name="date_step_end" type="date" jt="91" />
+			<column name="buy_id" type="integer" jt="4" />
+			<column name="step_id" type="integer" jt="4" />
+			<index name="pk_buy_step" unique="PRIMARY_KEY" >
+				<column name="buy_step_id" />
+			</index>
+			<index name="unq_buy_step_buy_id" unique="UNIQUE_KEY" >
+				<column name="buy_id" />
+			</index>
+			<index name="unq_buy_step_step_id" unique="UNIQUE_KEY" >
+				<column name="step_id" />
+			</index>
+			<fk name="fk_buy_step_step" to_schema="bookstore" to_table="step" >
+				<fk_column name="step_id" pk="step_id" />
+			</fk>
+			<fk name="fk_buy_step_buy" to_schema="bookstore" to_table="buy" >
+				<fk_column name="buy_id" pk="buy_id" />
+			</fk>
+		</table>
+		<table name="city" prior="tbl" >
+			<column name="city_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="name_city" type="varchar" length="50" jt="12" mandatory="y" />
+			<column name="days_delivery" prior="days_delivey" type="integer" jt="4" />
+			<index name="pk_city" unique="PRIMARY_KEY" >
+				<column name="city_id" />
+			</index>
+		</table>
+		<table name="client" prior="tbl" >
+			<column name="client_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="name_client" type="varchar" length="100" jt="12" mandatory="y" />
+			<column name="email" type="varchar" length="30" jt="12" mandatory="y" />
+			<column name="city_id" type="integer" jt="4" mandatory="y" />
+			<index name="pk_client" unique="PRIMARY_KEY" >
+				<column name="client_id" />
+			</index>
+			<index name="unq_client_city_id" unique="UNIQUE_KEY" >
+				<column name="city_id" />
+			</index>
+			<fk name="fk_client_city" to_schema="bookstore" to_table="city" >
+				<fk_column name="city_id" pk="city_id" />
+			</fk>
+		</table>
+		<table name="genre" prior="tbl" >
+			<column name="genre_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="name_genre" type="varchar" length="100" jt="12" />
+			<index name="pk_genre" unique="PRIMARY_KEY" >
+				<column name="genre_id" />
+			</index>
+		</table>
+		<table name="step" prior="tbl" >
+			<column name="step_id" type="integer" jt="4" mandatory="y" >
+				<identity><![CDATA[GENERATED ALWAYS AS IDENTITY ]]></identity>
+			</column>
+			<column name="name_step" type="varchar" length="100" jt="12" />
+			<index name="pk_step" unique="PRIMARY_KEY" >
+				<column name="step_id" />
+			</index>
+		</table>
+	</schema>
+	<connector name="PostgreSQL" database="PostgreSQL" driver_class="org.postgresql.Driver" driver_jar="postgresql-42.4.0.jar" driver_desc="Standard" host="localhost" port="5432" instance="postgres" user="postgres" passwd="MQ==" />
+	<layout name="Parsed Script Layout" id="Layout-10fb" show_relation="columns" >
+		<entity schema="bookstore" name="author" color="C1D8EE" x="48" y="48" />
+		<entity schema="bookstore" name="book" color="C1D8EE" x="144" y="192" />
+		<entity schema="bookstore" name="buy" color="C1D8EE" x="352" y="384" />
+		<entity schema="bookstore" name="buy_book" color="C1D8EE" x="96" y="464" />
+		<entity schema="bookstore" name="buy_step" color="C1D8EE" x="512" y="560" />
+		<entity schema="bookstore" name="city" color="C1D8EE" x="368" y="48" />
+		<entity schema="bookstore" name="client" color="C1D8EE" x="368" y="208" />
+		<entity schema="bookstore" name="genre" color="C1D8EE" x="192" y="48" />
+		<entity schema="bookstore" name="step" color="C1D8EE" x="544" y="384" />
+		<script name="SQL_Editor" id="Editor-45f" language="SQL" >
+			<string><![CDATA[select version()]]></string>
+		</script>
+		<query id="Query-13e0" name="fk_book_author_001" confirmed="y" >
+			<query_table schema="bookstore" name="author" alias="a" x="48" y="48" >
+				<column name="author_id" />
+				<column name="name_author" />
+			</query_table>
+		</query>
+	</layout>
+</project>
