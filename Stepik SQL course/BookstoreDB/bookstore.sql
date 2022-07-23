@@ -342,3 +342,112 @@ JOIN
     USING(book_id)
 GROUP BY title
 ORDER BY Сумма DESC; 
+
+
+/* Add new client named 'Попов Илья', email is popov@test,
+ has been living in Moscow */
+
+INSERT INTO client (name, city_id, email)
+SELECT 'Попов Илья', city_id, 'popov@test'
+FROM city
+WHERE name_city = 'Москва';
+
+/* Create ne order for 'Попов Илья' 
+with order comment «Связаться со мной по вопросу доставки».*/
+
+insert into buy (buy_description, client_id)
+select 'Связаться со мной по вопросу доставки', client_id
+from client
+where client.name = 'Попов Илья';
+
+/*Add into buy_book order with id = 5, which must include
+2 books Пастернака «Лирика» and 1 book Булгакова «Белая гвардия»*/
+
+insert into buy_book (buy_id, book_id, amount)
+values 
+( (select buy_id   -- buy_id for inserting 1st book
+from buy
+join client using(client_id)
+where name = 'Попов Илья'), 
+
+(select book_id  -- book_id for inserting 1st book
+from book
+join author using(author_id)
+where title = 'Лирика' and name_author LIKE 'Пастернак%'),
+ 2);
+
+insert into buy_book (buy_id, book_id, amount)
+values 
+( (select buy_id   -- buy_id for inserting 1st book
+from buy
+join client using(client_id)
+where name = 'Попов Илья'), 
+
+(select book_id  -- book_id for inserting 1st book
+from book
+join author using(author_id)
+where title = 'Белая гвардия' and name_author LIKE 'Булгаков%'),
+1);
+
+
+/* Decrease quantity of books, ordered in id order = 5*/
+
+update book, buy_book
+set book.amount = book.amount - buy_book.amount
+where buy_book.buy_id = 5 and book.book_id = buy_book.book_id;
+
+/*Create pay check (buy_pay table) for id order 5, 
+include in title, author, price, quantity and cost.
+Infromation must be inserted in order by title */
+
+create table buy_pay as
+select  book.title, 
+        author.name_author, 
+        book.price, 
+        buy_book.amount, 
+        book.price * buy_book.amount as Cost
+from    buy_book
+        join book using(book_id)
+        join author using(author_id)
+where   buy_book.buy_id = 5
+order by book.title;
+
+select * from buy_pay;
+
+/*Include all steps for order id =5. For columns date_step_beg 
+и date_step_end set null
+В таблицу buy_step для заказа с номером 5 включить все этапы
+ из таблицы step, которые должен пройти этот заказ. 
+ В столбцы date_step_beg и date_step_end всех записей занести Null.
+*/
+
+insert into buy_step (buy_id, step_id)
+select buy_id, step_id
+from  buy
+cross join step
+where buy_id = 5;
+
+/*In buy_step-table insert paycheck date 12.04.2020.
+В таблицу buy_step занести дату 12.04.2020 выставления счета на оплату 
+заказа с номером 5.
+*/
+update buy_step
+set date_step_beg = '2020-04-12'
+where buy_id = 5
+        and step_id = (select step_id from step where name_step = 'Оплата');
+
+/* Finish up Payment-step for order #5 by 13.04.2020 and begin next 
+Packing-step by same date.
+Завершить этап «Оплата» для заказа с номером 5, вставив в столбец 
+date_step_end дату 13.04.2020, и начать следующий этап («Упаковка»), 
+задав в столбце date_step_beg для этого этапа ту же дату.
+*/        
+update buy_step
+set date_step_end = '2020-04-13'
+where buy_id = 5
+        and step_id = (select step_id from step where name_step = 'Оплата');
+
+update buy_step
+set date_step_beg = '2020-04-13'
+where buy_id = 5
+        and step_id = (select step_id +1 from step where name_step = 'Оплата');
