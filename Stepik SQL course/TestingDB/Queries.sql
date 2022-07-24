@@ -130,9 +130,13 @@ join answer a using(answer_id);
  */
 
 
-select a.student_id , a.subject_id , a.date_attempt , round(sum(result)*100/3, 2) as Результат
+select s2.name_student , s.name_subject  , a.date_attempt , round(sum(a2.is_correct)*100/3, 2) as Результат
 from attempt a 
-group by a.student_id , a.subject_id , a.date_attempt
+join student s2 using(student_id)
+join subject s using(subject_id)
+join testing t using(attempt_id)
+join answer a2 using(answer_id)
+group by 1 , 2 , 3
 order by a.student_id, a.date_attempt desc;
 
 
