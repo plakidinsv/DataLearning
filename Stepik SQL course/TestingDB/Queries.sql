@@ -140,3 +140,22 @@ group by 1 , 2 , 3
 order by a.student_id, a.date_attempt desc;
 
 
+/*For each question show percentage of successed answers.
+ * Also show subject references for question, question, two calculated column:
+ * toatal number quantity of answers and suсcess.
+ * sort by subject name, success desc, question name asc.
+ * Question with lenght vore than 30 symbols must be cutted and added '...'-symbols at the end instead 
+ * 
+ * 
+ * 
+ * Для каждого вопроса вывести процент успешных решений, то есть отношение количества верных ответов к общему 
+ * количеству ответов, значение округлить до 2-х знаков после запятой. Также вывести название предмета, к которому 
+ * относится вопрос, и общее количество ответов на этот вопрос. В результат включить название дисциплины, вопросы 
+ * по ней (столбец назвать Вопрос), а также два вычисляемых столбца Всего_ответов и Успешность. 
+ * Информацию отсортировать сначала по названию дисциплины, потом по убыванию успешности, а потом по тексту вопроса 
+ * в алфавитном порядке.
+ * Поскольку тексты вопросов могут быть длинными, обрезать их 30 символов и добавить многоточие "...".
+ */
+
+
+
