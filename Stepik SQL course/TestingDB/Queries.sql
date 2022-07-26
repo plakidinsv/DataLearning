@@ -140,7 +140,7 @@ group by 1 , 2 , 3
 order by a.student_id, a.date_attempt desc;
 
 
-/*For each question show percentage of successed answers.
+/*For each question deduct percentage of successed answers.
  * Also show subject references for question, question, two calculated column:
  * toatal number quantity of answers and suсcess.
  * sort by subject name, success desc, question name asc.
@@ -158,4 +158,16 @@ order by a.student_id, a.date_attempt desc;
  */
 
 
-
+select 	s.name_subject, 
+		concat(left(q.name_question, 30), '...') as Question, 
+		count(t.answer_id) as Quantity, 
+		round(sum(a.is_correct)*100/count(t.answer_id), 2) as Successes
+from 	question q  
+left outer join testing t using(question_id)
+join 	answer a using(answer_id)
+join 	subject s using(subject_id)
+group by 	s.name_subject, 
+			q.name_question
+order by 	s.name_subject, 
+			Successes desc, 
+			Question;
