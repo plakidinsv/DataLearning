@@ -195,10 +195,69 @@ join	subject s using(subject_id)
 where 	name_student = 'Баранов Павел'
 		and
 		name_subject = 'Основы баз данных';
-
-
 	
-		
-		
-		
+	select * from attempt a ;
+
+
+/*Randomly choose 3 questions by subject choosen by last added to attempt table student and add
+ * this questions to testing-table.
+ * 
+ * Случайным образом выбрать три вопроса (запрос) по дисциплине, тестирование по которой собирается проходить 
+ * студент, занесенный в таблицу attempt последним, и добавить их в таблицу testing. id последней попытки 
+ * получить как максимальное значение id из таблицы attempt.
+ */
+
+insert into testing (attempt_id, question_id)
+select attempt_id, question_id 
+from attempt 
+join question using(subject_id)
+where attempt_id = (select max(attempt_id) from attempt)
+order by rand()
+limit 3
+;
+select * from testing t ;
+
+/* Студент прошел тестирование (то есть все его ответы занесены в таблицу testing), далее необходимо 
+ * вычислить результат(запрос) и занести его в таблицу attempt для соответствующей попытки.  
+ * Результат попытки вычислить как количество правильных ответов, деленное на 3 (количество вопросов в каждой попытке) 
+ * и умноженное на 100. Результат округлить до целого. */
+
+-- insertg information about answers in attempt 8
+
+update testing 
+set answer_id = 19
+where attempt_id = 8 and question_id = 7;
+
+update testing 
+set answer_id = 17
+where attempt_id = 8 and question_id = 6;
+
+update testing 
+set answer_id = 22
+where attempt_id = 8 and question_id = 8;
+
+
+
+update attempt 
+set result = (select sum(is_correct)*100/3 from testing 
+			join answer using(answer_id)
+			where attempt_id = 8)
+where attempt_id =8;
+
+
+/*Удалить из таблицы attempt все попытки, выполненные раньше 1 мая 2020 года. 
+ * delete all attempts before 05/01/2020
+ */
+ */
+
+select * from attempt a 
+where date_attempt < '2020-05-01';
+
+delete from attempt 
+where date_attempt < '2020-05-01';
+
+
+
+
+
 

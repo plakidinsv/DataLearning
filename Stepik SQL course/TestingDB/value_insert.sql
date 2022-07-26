@@ -1,3 +1,5 @@
+use testingdb;
+
 insert into subject (name_subject)
 values  ('Основы SQL'),
         ('Основы баз данных'),
