@@ -171,3 +171,34 @@ group by 	s.name_subject,
 order by 	s.name_subject, 
 			Successes desc, 
 			Question;
+		
+		
+
+/*Add new attempt for student Баранов Павел on sunbject «Основы баз данных».
+ * Set current date as attempt date.
+ * 
+ *В таблицу attempt включить новую попытку для студента Баранова Павла по дисциплине «Основы баз данных».
+ * Установить текущую дату в качестве даты выполнения попытки.*/
+		
+-- using subqueries
+insert into attempt (student_id, subject_id, date_attempt)
+values 	(select student_id from student where student.name_student = 'Баранов Павел', 
+		select subject_id from subject  where subject.name_subject = 'Основы баз данных',
+		now());
+	
+-- using join (faster way)
+insert into attempt (student_id, subject_id, date_attempt)	
+select 	student_id, subject_id, now()
+from 	attempt a2 
+join 	student t using(student_id)
+join	subject s using(subject_id)
+where 	name_student = 'Баранов Павел'
+		and
+		name_subject = 'Основы баз данных';
+
+
+	
+		
+		
+		
+
