@@ -88,7 +88,7 @@ select * from enrollee_achievement ea ;
 select * from achievement a ;
 
 -- explain
-select e.name_enrollee , if(sum(bonus) is null, 0, sum(bonus)) as total_bonus -- IFNULL(SUM(add_ball), 0) or sum(coalesce(add_ball, 0))
+select e.name_enrollee , if(sum(bonus) is null, 0, sum(bonus)) as total_bonus -- IFNULL(SUM(bonus), 0) or sum(coalesce(bonus, 0))
 from achievement a 
 join enrollee_achievement ea using (achievement_id)
 right outer join enrollee e using(enrollee_id)
@@ -171,7 +171,7 @@ order by name_program;
  * а потом по убыванию суммы баллов виде.
  */
 
-select name_program, name_enrollee , sum(result) 
+select name_program, name_enrollee , sum(result) as itog
 from program_enrollee pe 
 join program_subject ps using(program_id)
 join enrollee_subject es using (enrollee_id, subject_id)
@@ -194,9 +194,9 @@ order by 1, 3 desc;
 Для этого задания в базу данных добавлена строка:
 
 INSERT INTO enrollee_subject (enrollee_id, subject_id, result) VALUES (2, 3, 41);
-Добавлен человек, который сдавал Физику, но не подал документы ни на одну образовательную программу, где этот предмет нужен.
- */
-
+Добавлен человек, который сдавал Физику, но не подал документы ни на одну образовательную программу, 
+где этот предмет нужен. */
+INSERT INTO enrollee_subject (enrollee_id, subject_id, result) VALUES (2, 3, 41);
 
 select name_program, name_enrollee
 from program_enrollee pe 
@@ -207,6 +207,104 @@ join enrollee e using(enrollee_id)
 where result < min_result
 group by 1,2  
 order by 1, 2;
+
+
+/*create applicant table includes program id, enrollee id, total grade (mesure itog from assignment above),
+ * information musty be sorted by  program id asc then itog desc
+ * 
+ * Создать вспомогательную таблицу applicant,  куда включить id образовательной программы, id абитуриента, 
+ * сумму баллов абитуриентов (столбец itog) в отсортированном сначала по id образовательной программы, 
+ * а потом по убыванию суммы баллов виде (использовать запрос из предыдущего урока).
+ */
+
+create table applicant as
+select program_id, enrollee_id , sum(result) as itog
+from program_enrollee pe 
+join program_subject ps using(program_id)
+join enrollee_subject es using (enrollee_id, subject_id)
+group by 1,2  
+order by 1,3 desc;
+
+SELECT * FROM university.applicant;
+
+/*delete from applicant rows where enrollee hasn't get min grade at least at one subject
+ * 
+ * Из таблицы applicant, созданной на предыдущем шаге, удалить записи, если абитуриент на выбранную образовательную 
+ * программу не набрал минимального балла хотя бы по одному предмету (использовать запрос из предыдущего урока). */
+
+delete from applicant
+using applicant
+inner join (select program_id, enrollee_id
+    from program_enrollee pe 
+    join program_subject ps using(program_id)
+    join enrollee_subject es using (enrollee_id, subject_id)
+    where result < min_result
+    group by 1, 2) as tmp
+    using (enrollee_id, program_id)
+
+
+
+/*Summ itog-grade with additional grades for achievements
+ * 
+ * Повысить итоговые баллы абитуриентов в таблице applicant на значения дополнительных баллов (использовать запрос из предыдущего урока).*/
+select * from applicant a ;   
+    
+update applicant, 
+		(select enrollee_id , sum(coalesce(bonus, 0)) as total_bonus
+		from achievement a 
+		join enrollee_achievement ea using (achievement_id)
+		right outer join enrollee e using(enrollee_id)
+		group by enrollee_id
+		order by 1) as tmp
+set applicant.itog = applicant.itog + tmp.total_bonus
+where applicant.enrollee_id = tmp.enrollee_id;
+
+-- OR using CTE
+with tmp as 
+(select enrollee_id , sum(coalesce(bonus, 0)) as total_bonus
+from achievement a 
+join enrollee_achievement ea using (achievement_id)
+right outer join enrollee e using(enrollee_id)
+group by enrollee_id
+order by 1)
+
+update applicant, tmp
+set applicant.itog = applicant.itog + tmp.total_bonus
+where applicant.enrollee_id = tmp.enrollee_id;
+
+
+/*Поскольку при добавлении дополнительных баллов, абитуриенты по каждой образовательной программе могут 
+ * следовать не в порядке убывания суммарных баллов, необходимо создать новую таблицу applicant_order на 
+ * основе таблицы applicant. При создании таблицы данные нужно отсортировать сначала по id образовательной 
+ * программы, потом по убыванию итогового балла. А таблицу applicant, которая была создана как вспомогательная, необходимо удалить.*/
+
+
+create table applicant_order as
+(select program_id, enrollee_id, itog
+from applicant a 
+order by program_id, itog desc);
+
+drop table applicant;
+
+
+/*Включить в таблицу applicant_order новый столбец str_id целого типа , расположить его перед первым.*/
+
+alter table applicant_order add str_id int first;
+
+select * from applicant_order ao ;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
