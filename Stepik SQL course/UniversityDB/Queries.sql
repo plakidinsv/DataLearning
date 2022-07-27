@@ -128,5 +128,86 @@ group by d.name_department ,
 order by 5 desc	;
 
 
+/*Show up programs needed passed subjects «Информатика» and  «Математика» to enroll.
+ *  
+ * Вывести образовательные программы, на которые для поступления необходимы 
+ * предмет «Информатика» и «Математика» в отсортированном по названию программ виде.
+ */
+
+select * from program_subject ps ;
+select * from subject s ;
+
+
+select name_program
+from program_subject ps
+join program p using (program_id)
+where subject_id in (select subject_id from subject s where name_subject in ('Информатика','Математика'))
+group by name_program
+having count(*) = 2
+order by name_program;
+
+-- OR 
+
+select name_program
+from subject
+join program_subject using (subject_id)
+join program using (program_id)
+where name_subject in ('Математика','Информатика')
+group by name_program
+having count(*) = 2
+order by name_program;
+
+
+/*Deduct total grade for each student on every program he's applied.
+ * Fetch up program name, applicant name, total grade.
+ * sort by program then grade desc
+ * 
+ * 
+ * Посчитать количество баллов каждого абитуриента на каждую образовательную программу, 
+ * на которую он подал заявление, по результатам ЕГЭ. В результат включить название 
+ * образовательной программы, фамилию и имя абитуриента, а также столбец с суммой баллов, 
+ * который назвать itog. 
+ * Информацию вывести в отсортированном сначала по образовательной программе, 
+ * а потом по убыванию суммы баллов виде.
+ */
+
+select name_program, name_enrollee , sum(result) 
+from program_enrollee pe 
+join program_subject ps using(program_id)
+join enrollee_subject es using (enrollee_id, subject_id)
+join program p using(program_id)
+join enrollee e using(enrollee_id)
+group by 1,2  
+order by 1, 3 desc;
+
+
+/* Вывести название образовательной программы и фамилию тех абитуриентов, которые подавали 
+ * документы на эту образовательную программу, но не могут быть зачислены на нее. 
+ * Эти абитуриенты имеют результат по одному или нескольким предметам ЕГЭ, необходимым 
+ * для поступления на эту образовательную программу, меньше минимального балла. 
+ * Информацию вывести в отсортированном сначала по программам, а потом по фамилиям абитуриентов виде.
+
+Например, Баранов Павел по «Физике» набрал 41 балл, а  для образовательной программы 
+«Прикладная механика» минимальный балл по этому предмету определен в 45 баллов. 
+Следовательно, абитуриент на данную программу не может поступить.
+
+Для этого задания в базу данных добавлена строка:
+
+INSERT INTO enrollee_subject (enrollee_id, subject_id, result) VALUES (2, 3, 41);
+Добавлен человек, который сдавал Физику, но не подал документы ни на одну образовательную программу, где этот предмет нужен.
+ */
+
+
+select name_program, name_enrollee
+from program_enrollee pe 
+join program_subject ps using(program_id)
+join enrollee_subject es using (enrollee_id, subject_id)
+join program p using(program_id)
+join enrollee e using(enrollee_id)
+where result < min_result
+group by 1,2  
+order by 1, 2;
+
+
 
 
