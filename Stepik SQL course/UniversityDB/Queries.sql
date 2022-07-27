@@ -66,6 +66,66 @@ having min(ps.min_result) >= 40
 order by p.name_program ;
 
 
+/*Show programs has the maximum plan.
+ *  
+ * Вывести образовательные программы, которые имеют самый большой план набора,  вместе с этой величиной. */
+
+select * from program;
+
+select name_program, plan
+from program p 
+where plan = (select max(plan) from program p2);
+
+
+/*Deduct bouns points for every applicant.
+ * Sort by names. 
+ * 
+ * Посчитать, сколько дополнительных баллов получит каждый абитуриент. 
+ * Столбец с дополнительными баллами назвать Бонус. 
+ * Информацию вывести в отсортированном по фамилиям виде.
+ */
+select * from enrollee_achievement ea ;
+select * from achievement a ;
+
+-- explain
+select e.name_enrollee , if(sum(bonus) is null, 0, sum(bonus)) as total_bonus -- IFNULL(SUM(add_ball), 0) or sum(coalesce(add_ball, 0))
+from achievement a 
+join enrollee_achievement ea using (achievement_id)
+right outer join enrollee e using(enrollee_id)
+group by enrollee_id
+order by 1;
+
+
+/*deduct number of applicants per program and it's competition for a place
+ * (namber of applies/plan) rounded by 2 digits.
+ * Fetch up department name, program, plan, number of applicants, competition for a place.
+ * sort by competititon desc.
+ * 
+ * 
+ * 
+ * Выведите сколько человек подало заявление на каждую образовательную программу 
+ * и конкурс на нее (число поданных заявлений деленное на количество мест по плану), 
+ * округленный до 2-х знаков после запятой. В запросе вывести название факультета, 
+ * к которому относится образовательная программа, название образовательной программы, 
+ * план набора абитуриентов на образовательную программу (plan), количество поданных 
+ * заявлений (Количество) и Конкурс. Информацию отсортировать в порядке убывания конкурса.
+ */
+select * from department d ;
+select * from program p ;
+select * from program_enrollee pe ;
+
+select d.name_department ,
+		p.name_program ,
+		p.plan ,
+		count(enrollee_id) as Количество,
+		round(count(enrollee_id)/plan, 2) as Конкурс
+from department d 
+join program p using(department_id)
+right outer join program_enrollee pe using(program_id)
+group by d.name_department ,
+		p.name_program ,
+		p.plan 
+order by 5 desc	;
 
 
 
