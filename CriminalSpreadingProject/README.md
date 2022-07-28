@@ -1,4 +1,4 @@
-## Criminal Spreading Project (just a workname, srsly)**
+## Criminal Spreading Project (just a workname, srsly)
 
 **Description**
 Main goal of CSProject is presenting the current criminal situation by state and the largest cities in the states, ordered by crime category for purposes finding the most safity location to live.
