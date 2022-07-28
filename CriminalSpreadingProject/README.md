@@ -7,7 +7,7 @@ Also seems important to take in mind the crimanal dynamic at each location by ye
 
 ###### Steps for CSProject:
 
-1. Finding relevant data from different sources whatever type of dataset.
+[]1. Finding relevant data from different sources whatever type of dataset.
 2. Extracting data to the storage.
 3. Cleaning and conforming data (errors, deduplication, etc.) 
 4. Definding data model.
