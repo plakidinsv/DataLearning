@@ -1,4 +1,4 @@
-## Criminal Spreading Project (just a workname, srsly)
+## Criminal Spreading Project (just a workname, srsly :roll_eyes:)
 
 ## Description
 
