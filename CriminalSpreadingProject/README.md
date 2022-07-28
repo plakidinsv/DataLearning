@@ -18,5 +18,5 @@ Also seems important to take in mind the crimanal dynamic at each location by ye
 ###### Tools (will be specified):
 
 ETL: Pentaho DI/ dbt/airflow  
-DB: PostgreSQL/MySQL_
-PL: SQL, Python (pandas library)_
+DB: PostgreSQL/MySQL  
+PL: SQL, Python (pandas library)  
