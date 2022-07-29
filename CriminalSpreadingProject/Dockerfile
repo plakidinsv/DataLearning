@@ -14,7 +14,7 @@ RUN airflow users create \
     --password admin
 
 #WORKDIR /app
-#COPY dags /root/airflow/dags
+#COPY /airflow/dags /root/airflow/dags
 #--mount type=bind,source="$(pwd)"/airflow/dags,target=/root/airflow/dags airflow
 
 CMD airflow standalone
