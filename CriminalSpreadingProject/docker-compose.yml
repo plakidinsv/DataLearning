@@ -11,9 +11,9 @@ services:
     environment:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_USER=root
-      - POSTGRES_DB=initial
+      - POSTGREScle_DB=initial
     ports:
-      - "5432:5432"
+      - "5431:5432"
 
   pgadmin:
       container_name: pgadmin4_container
