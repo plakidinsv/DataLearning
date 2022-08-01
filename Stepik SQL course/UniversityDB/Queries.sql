@@ -294,9 +294,27 @@ alter table applicant_order add str_id int first;
 select * from applicant_order ao ;
 
 
+/*Занести в столбец str_id таблицы applicant_order нумерацию абитуриентов, которая начинается с 1 для 
+ * каждой образовательной программы. */
+
+SET @num_pr := 0;
+SET @row_num := 1;
+
+update applicant_order
+set str_id = if(program_id = @num_pr, @row_num := @row_num + 1, @row_num := 1 and @num_pr := program_id);
 
 
+/*Создать таблицу student,  в которую включить абитуриентов, которые могут быть рекомендованы к зачислению  
+ * в соответствии с планом набора. Информацию отсортировать сначала в алфавитном порядке по названию программ, 
+ * а потом по убыванию итогового балла.*/
 
+create table student as
+select name_program, name_enrollee, itog
+from applicant_order 
+join program using (program_id)
+join enrollee using (enrollee_id)
+where str_id<=plan
+order by name_program, itog desc;
 
 
 
