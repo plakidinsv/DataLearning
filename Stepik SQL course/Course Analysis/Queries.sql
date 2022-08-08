@@ -160,6 +160,89 @@ from student_progress
 join student using (student_id)
 order by 2 desc, 1;
 
+/*Для студента с именем student_61 вывести все его попытки: название шага, результат и дату 
+ *отправки попытки (submission_time). Информацию отсортировать по дате отправки попытки и 
+ *указать, сколько минут прошло между отправкой соседних попыток. Название шага ограничить 
+ *20 символами и добавить "...". Столбцы назвать Студент, Шаг, Результат, Дата_отправки, Разница.*/
+
+select  student_name as Студент, 
+        concat(left(step_name, 20), '...') as Шаг, 
+        result as Результат, 
+        from_unixtime(submission_time) as Дата_отправки,
+        sec_to_time(submission_time - lag(submission_time, 1, submission_time) over (order by submission_time)) as Разница
+from step_student
+join student using (student_id)
+join step using (step_id)
+where student_name = 'student_61';
+
+
+/*Посчитать среднее время, за которое пользователи проходят урок по следующему алгоритму:
+для каждого пользователя вычислить время прохождения шага как сумму времени, потраченного 
+на каждую попытку (время попытки - это разница между временем отправки задания и временем 
+начала попытки), при этом попытки, которые длились больше 4 часов не учитывать, так как 
+пользователь мог просто оставить задание открытым в браузере, а вернуться к нему на следующий день;
+для каждого студента посчитать общее время, которое он затратил на каждый урок;
+вычислить среднее время выполнения урока в часах, результат округлить до 2-х знаков после запятой;
+вывести информацию по возрастанию времени, пронумеровав строки, для каждого урока указать номер 
+модуля и его позицию в нем.
+Столбцы результата назвать Номер, Урок, Среднее_время.*/
+
+with 
+    tmp as
+    (select student_id, lesson_id, sum(submission_time-attempt_time)/3600 as lesson_time
+    from step_student
+    join step using (step_id)
+    where submission_time-attempt_time < 4*3600
+    group by 1, 2
+    order by 1, 2),
+
+    tmp2 as
+    (select lesson_name, round(avg(lesson_time), 2) as Среднее_время
+    from tmp
+    join lesson using(lesson_id)
+    group by 1)
+
+select  row_number() over (order by Среднее_время) as Номер,
+        concat(module_id, '.', lesson_position, ' ', lesson_name) as Урок, 
+        Среднее_время
+from tmp2
+join lesson using(lesson_name);
+
+
+/*Вычислить рейтинг каждого студента относительно студента, прошедшего наибольшее количество 
+ *шагов в модуле (вычисляется как отношение количества пройденных студентом шагов к максимальному 
+ *количеству пройденных шагов, умноженное на 100). Вывести номер модуля, имя студента, количество 
+ *пройденных им шагов и относительный рейтинг. Относительный рейтинг округлить до одного знака 
+ *после запятой. Столбцы назвать Модуль, Студент, Пройдено_шагов и Относительный_рейтинг  
+ *соответственно. Информацию отсортировать сначала по возрастанию номера модуля, потом по убыванию 
+ *относительного рейтинга и, наконец, по имени студента в алфавитном порядке.*/
+
+select module_id as Модуль, student_name as Студент, count(distinct step_id) as Пройдено_шагов,
+       round(count(distinct step_id)/max(count(distinct step_id)) over (partition by module_id)*100, 1)  as Относительный_рейтинг
+from step_student join student using(student_id)
+                  join step using(step_id)
+                  join lesson using(lesson_id)
+where result = 'correct'
+group by 1, 2
+order by 1, 4 desc, 2;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
