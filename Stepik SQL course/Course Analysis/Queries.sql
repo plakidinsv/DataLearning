@@ -320,15 +320,76 @@ III группа - это те пользователи, которые не с�
 Вывести группу (I, II, III), имя пользователя, количество шагов, которые пользователь выполнил по соответствующему 
 способу. Столбцы назвать Группа, Студент, Количество_шагов. Отсортировать информацию по возрастанию номеров групп, 
 потом по убыванию количества шагов и, наконец, по имени студента в алфавитном порядке.*/
-       
--- Group # 2
-select student_name, step_id
-from step_student
-join student using (student_id)
-group by 1,2
-having count(result = 'correct') >= 2
-order by 1,2;
 
+       
+WITH group_fst(stud, step, res, next_res) AS
+    (SELECT
+     	student_id,
+     	step_id,
+     	result,
+     	LAG(result) OVER (PARTITION BY student_id, step_id order by submission_time)
+     FROM step_student),
+    group_sec(student_id, step, rez) AS
+    (SELECT
+    	student_id,
+        step_id,
+        COUNT(*)
+    FROM step_student
+    WHERE result = 'correct'
+    GROUP BY 1,2
+    HAVING count(*) > 1),
+    group_trd(student_name, step) AS
+    (
+        SELECT student_name,step_id
+        FROM step_student
+        JOIN student USING(student_id)
+        GROUP BY student_name,step_id
+        HAVING SUM(CASE WHEN result = 'wrong' THEN 1 ELSE 0 END) =  COUNT(*)
+    )
+    
+   
+   SELECT 'I' AS Группа, student_name AS Студент, count(step) AS Количество_шагов
+    FROM group_fst
+    JOIN student ON group_fst.stud=student.student_id
+    WHERE res = 'wrong' AND next_res = 'correct'
+    GROUP BY 1,2
+
+UNION
+   
+    SELECT 'II' AS Группа, student_name AS Студент, count(step) AS Количество_шагов
+    FROM group_sec
+    JOIN student USING(student_id)
+    GROUP BY student_id
+
+UNION
+    
+    SELECT 'III' AS Группа, student_name AS Студент, count(step) AS Количество_шагов
+    FROM group_trd
+    GROUP BY student_name
+
+ORDER BY 1 asc, 3 desc, 2 asc;
+
+SELECT
+     student_id,
+     step_id,
+     result,
+     LAG(result) OVER (PARTITION BY student_id, step_id order by submission_time)
+     FROM step_student;
+
+SELECT
+            student_id,
+            step_id,
+            COUNT(*)
+         FROM step_student
+         WHERE result = 'correct'
+         GROUP BY 1,2
+         HAVING count(*) > 1;
+
+SELECT student_name,step_id
+        FROM step_student
+        JOIN student USING(student_id)
+        GROUP BY student_name,step_id
+        HAVING SUM(CASE WHEN result = 'wrong' THEN 1 ELSE 0 END) =  COUNT(*)
        
        
        
