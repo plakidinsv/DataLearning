@@ -1,8 +1,8 @@
-FROM ubuntu:20.04
+FROM python:3.7
 
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip
+#RUN apt-get update && apt-get install -y \
+#    python3 \
+#    python3-pip
 RUN pip install --no-cache-dir apache-airflow==2.3.3 pandas 
 RUN airflow db init
 RUN airflow users create \
