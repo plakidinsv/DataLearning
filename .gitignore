@@ -1,2 +1,9 @@
 
 *.tar
+CriminalSpreadingProject/postgres-db-volume/
+CriminalSpreadingProject/postgres/
+CriminalSpreadingProject/pgadmin/
+CriminalSpreadingProject/minio/
+CriminalSpreadingProject/airflow/pluguns/
+CriminalSpreadingProject/airflow/logs/
+test_air_2/
