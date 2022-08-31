@@ -1,9 +1,12 @@
 
 *.tar
-CriminalSpreadingProject/postgres-db-volume/
-CriminalSpreadingProject/postgres/
-CriminalSpreadingProject/pgadmin/
-CriminalSpreadingProject/minio/
-CriminalSpreadingProject/airflow/pluguns/
-CriminalSpreadingProject/airflow/logs/
-test_air_2/
+micro-data-lake-master/
+prjct/postgres-db-volume/
+prjct/postgres/
+prjct/pgadmin/
+prjct/minio/
+prjct/airflow/pluguns/
+prjct/airflow/logs/
+prjct/airflow/dbt/logs/
+prjct/airflow/dbt/crime_spreading/logs/
+prjct2/
