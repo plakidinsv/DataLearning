@@ -1,0 +1,45 @@
+{
+    "path_count": 75,
+    "parsed_path_count": 3,
+    "static_analysis_path_count": 2,
+    "static_analysis_parsed_path_count": 2,
+    "is_partial_parse_enabled": true,
+    "is_static_analysis_enabled": true,
+    "read_files_elapsed": 0.11381540000002133,
+    "load_macros_elapsed": 0.00047249999988707714,
+    "parse_project_elapsed": 0.06333810000023732,
+    "patch_sources_elapsed": 1.1500000255182385e-05,
+    "process_manifest_elapsed": 0.0004245000000082655,
+    "load_all_elapsed": 0.2564840000000004,
+    "projects": [
+        {
+            "project_name": "crime_spreading",
+            "elapsed": 0.0632978000003277,
+            "parsers": [
+                {
+                    "parser": "model",
+                    "elapsed": 0.029138700000203244,
+                    "parsed_path_count": 2
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.03414480000037656,
+                    "parsed_path_count": 1
+                }
+            ],
+            "parsed_path_count": 3
+        },
+        {
+            "project_name": "dbt_postgres",
+            "elapsed": 0.0,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt",
+            "elapsed": 0.0,
+            "parsers": [],
+            "parsed_path_count": 0
+        }
+    ]
+}

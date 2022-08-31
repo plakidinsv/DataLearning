@@ -1,0 +1,151 @@
+version: '3.9'
+x-airflow-common:
+  &airflow-common
+  build: 
+    context: .
+    dockerfile: ./Dockerfile
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__CORE__FERNET_KEY: ''
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__API__AUTH_BACKEND: 'airflow.api.auth.backend.basic_auth'
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/logs:/opt/airflow/logs
+    - ./airflow/plugins:/opt/airflow/plugins
+    - ./airflow/dbt:/opt/airflow/dbt
+    - ./dbt:/home/airflow/.dbt/
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    &airflow-common-depends-on
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - ./postgres-db-volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - 8080:8080
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+
+  airflow-triggerer:
+    <<: *airflow-common
+    command: triggerer
+    healthcheck:
+      test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+
+  airflow-cli:
+    <<: *airflow-common
+    profiles:
+      - debug
+    environment:
+      <<: *airflow-common-env
+      CONNECTION_CHECK_MAX_COUNT: "0"
+    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
+    command:
+      - bash
+      - -c
+      - airflow
+
+  # object storage
+  minio:
+    image: 'bitnami/minio:2022'
+    environment:
+        MINIO_ROOT_USER: admin
+        MINIO_ROOT_PASSWORD: password
+    ports:
+        - '9000:9000'
+        - '9001:9001'
+    volumes:
+        - './minio/data:/data'
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://myminio:9000/minio/health/live"]
+        interval: 30s
+        timeout: 20s
+        retries: 3   
+
+  # relational database
+  postgres-db:
+    image: 'postgres:14-bullseye' 
+    environment:
+        POSTGRES_USER: 'postgres'
+        POSTGRES_PASSWORD: 'postgres'
+        PGDATA: /data/postgres
+    volumes:
+        - ./postgres:/data/postgres
+    ports:
+        - "5431:5432"
+    restart: on-failure
+    healthcheck:
+        test: ["CMD", "pg_isready"]
+        interval: 30s
+        timeout: 20s
+        retries: 3
+
+  # database administration tool
+  pgadmin:
+    image: 'dpage/pgadmin4:6.13'  
+    environment:
+        PGADMIN_DEFAULT_EMAIL: 'pgadmin4@pgadmin.org'
+        PGADMIN_DEFAULT_PASSWORD: 'admin'
+        PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+        - ./pgadmin:/var/lib/pgadmin
+    ports:
+        - "5050:80"
+    restart: on-failure
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://mypgadmin:80/misc/ping"]
+        interval: 30s
+        timeout: 20s
+        retries: 3
+
+volumes:
+  postgres-db-volume:
+  postgres:
+  pgadmin:
+  airflow:
