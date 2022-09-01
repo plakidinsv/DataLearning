@@ -19,10 +19,10 @@ Goal of CSProject are:
 ###### Tools:
 
 ETL: dbt as Transformation tool, Apache Airflow - orchestrator  
-DWH DB: PostgreSQL
-PL: SQL, Python (pandas library)
-Visualiazation: Apache Superset/Tableau
-S3 object storaje: minIO  
+DWH DB: PostgreSQL   
+PL: SQL, Python (pandas library)   
+Visualiazation: Apache Superset/Tableau  
+S3 object storaje: minIO   
 
 ## Creating 'Micro-Data-Lake' infrastructure for project
 
