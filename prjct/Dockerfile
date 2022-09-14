@@ -1,4 +1,4 @@
-FROM apache/airflow:2.3.4-python3.8
+FROM apache/airflow:2.3.4
 
 # Update and install system packages
 USER root

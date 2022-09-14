@@ -7,12 +7,12 @@ from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
 def upload_file(ds, **kwargs):
     # Upload files from local to Minio
-    path = os.listdir('C:/Users/plaki/Documents/GitHub/DataLearning/prjct/Source') # вынести в переменную
-    for file in path:
+    source = os.listdir('./Source') # вынести в переменную
+    for file in source:
         s3 = S3Hook('minio_conn')
-        s3.load_file(file,
+        s3.load_file(f'./Source/{file}',
                      key=file,
-                     bucket_name="prjct.raw.data")
+                     bucket_name='prjct.raw.data')
 
 with DAG (dag_id='load_local_to_minio',
         start_date=datetime(2022, 8, 25),  

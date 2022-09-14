@@ -21,7 +21,7 @@ def upload_file(ds, **kwargs):
 def read_file_content(ds, **kwargs):
     # Reading the existing file from minio
     s3 = S3Hook('minio_conn')
-    contents = s3.read_key(key="test/testfile.txt"
+    contents = s3.read_key(key="test/my-test-upload-file.txt"
                            ,bucket_name="miniobucket")
     print(f"File contents: '{contents}'.")
     
