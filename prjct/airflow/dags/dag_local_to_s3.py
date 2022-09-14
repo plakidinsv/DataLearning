@@ -4,6 +4,21 @@ from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
+'''
+add tasks:
+- check connection to s3
+    if ok
+    - upload files
+    else
+    - send email
+- rename files in s3 storage
+- copy to another bucket for transforming
+- dbt-dag 
+    - rename file
+    - verify data in files
+- create tables in RDBMS
+- add data to RDBMS
+'''
 
 def upload_file(ds, **kwargs):
     # Upload files from local to Minio
