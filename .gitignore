@@ -7,6 +7,7 @@ prjct/pgadmin/
 prjct/minio/
 prjct/airflow/pluguns/
 prjct/airflow/logs/
+prjct/airflow/dags/__pycache__/
 prjct/airflow/dbt/logs/
 prjct/airflow/dbt/crime_spreading/logs/
-prjct2/
+
