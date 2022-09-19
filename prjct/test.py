@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 
 # with os.scandir('./Source') as source:
@@ -14,3 +15,7 @@ for file in os.listdir(source):
 source = './Source'
 s = os.listdir(source)
 print(s)
+
+l = pathlib.Path('./Source')
+k = source.iterdir()
+print(k)
