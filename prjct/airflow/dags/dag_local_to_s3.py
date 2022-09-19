@@ -38,9 +38,21 @@ def copy_file(ds, **kwarfs):
     for file in source_keys:
         s3 = S3Hook('minio_conn')
         s3.copy_object(source_bucket_key=file,
-                        dest_bucket_key=file,
+                        dest_bucket_key=file[-8:],
                         source_bucket_name='prjct.raw.data',
                         dest_bucket_name='prjct.transfom.bucket')
+
+
+def rename_file(): 
+    '''
+    this task might be part of cope_files task:
+    simply save a file copy with another dest_bucket_key
+    '''
+    s3 = S3Hook('minio_conn')
+    bucket = s3.list_keys('prjct.transfom.bucket')
+
+    for file in bucket:
+        pass
 
 
 with DAG (dag_id='load_local_to_minio',
@@ -57,10 +69,11 @@ with DAG (dag_id='load_local_to_minio',
         python_callable=upload_file
     )
 
-    t2 =PythonOperator(
+    t2 = PythonOperator(
         task_id='copy_file_to_transformation_bucket',
         provide_context=True,
         python_callable=copy_file
     )
+
 
 t1 >> t2
