@@ -29,5 +29,6 @@ virtualenv==20.10.0
 cloudpathlib[s3,gs,azure]
 apache-airflow-providers-yandex==3.1.0
 yandexcloud==0.183.0
+xlrd==2.0.1
 
 
