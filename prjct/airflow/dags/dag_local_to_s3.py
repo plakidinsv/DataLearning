@@ -86,4 +86,4 @@ with DAG (dag_id='load_local_to_minio',
     )
 
 
-t1 >> t2 >> t3
+t1 >> t2 >> t3 >> t4 >> t5 >> t6
