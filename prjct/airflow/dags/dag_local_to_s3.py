@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+from sqlachemy import create_engine
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
@@ -9,13 +10,17 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 def convert_file(ds, **kwargs):
     # Upload files from local to MinIO
-    source = os.listdir('./Source') # вынести в переменную
+    source = os.listdir('./Source')
     for file in source:
-        if file.endswith('.xls'):
-            cleanfilename=file.replace('.xls', '')
+        if file.endswith('.xls'):            
             df = pd.read_excel(f'./Source/{file}')
+            df.columns = df.columns.str.lower().str.replace("\n", " ").str.replace(" ", "_").str.replace("-", "").str.replace("\d", "")
+            df = df.assign(year=file[-8:-4]+'-12'+'-31')
+            df['year'] = pd.to_datetime(df['year'])
+            df['state'] = df['state'].str.replace("\d", "")
+            cleanfilename=file.replace('.xls', '')
             csvname = cleanfilename + '.csv'
-            df.to_csv(f'./Source/{csvname}', index = False)
+            df.to_csv(f'./Source/{csvname}', index = False) 
 
 
 def upload_file(ds, **kwargs):
@@ -39,6 +44,24 @@ def copy_file(ds, **kwargs):
                 dest_bucket_key=file[-8:],
                 source_bucket_name='prjct.raw.data',
                 dest_bucket_name='prjct.transfom.bucket')
+
+def copy_data_to_postgres():
+    pass
+    engine = create_engine('postgresql+psycopg2://postgres:postgres@host.docker.internal:9000/crime_schema')
+    bucket_name='prjct.transfom.data'
+    s3 = S3Hook('minio_conn')
+    source_keys=s3.list_keys(bucket_name = bucket_name)
+
+    # Create an iterable that will read "chunksize=1000" rows
+    # at a time from the CSV file    
+    for file in source_keys:
+        for df in pd.read_csv(f's3://{bucket_name}/{file}', names=columns, chunksize=1000, header=None):
+          df.to_sql(
+            name = 'crime_schema', 
+            con = engine,
+            index=False,
+            if_exists='append' 
+          )
 
 
 with DAG (dag_id='load_local_to_minio',
@@ -73,17 +96,18 @@ with DAG (dag_id='load_local_to_minio',
         sql = "sql/crime_schema.sql"
     )
 
-    t5 = PostgresOperator(
-        task_id = 'create_state_table',
-        postgres_conn_id = 'postgres_default',
-        sql = 'sql/state_schema.sql'
-    )
-
-    t6 = PostgresOperator(
-        task_id = 'create_city_table',
-        postgres_conn_id = 'postgres_default',
-        sql = 'sql/city_schema.sql'
-    )
 
 
-t1 >> t2 >> t3 >> t4 >> t5 >> t6
+
+
+
+t1 >> t2 >> t3 >> t4 
+
+
+''' 
+*** NEXT STEPS*** 
+
+creating tables in postgres db
+adding data to db
+dbt task
+'''
