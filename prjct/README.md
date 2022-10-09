@@ -4,7 +4,7 @@
 
 Goal of CSProject are:
  - representing the current criminal situation by state and the largest cities in the states, ordered by crime category for purposes finding the most safity location to live
- - crimanal dynamic at each location by year
+ - criminal dynamic at each location by year
 
 ###### Steps for CSProject:
 
@@ -21,7 +21,7 @@ Goal of CSProject are:
 ETL: dbt as Transformation tool, Apache Airflow - orchestrator  
 DWH DB: PostgreSQL   
 PL: SQL, Python (pandas library)   
-Visualiazation: Apache Superset/Tableau  
+Visualization: Apache Superset/Tableau  
 S3 object storaje: minIO   
 
 ## Creating 'Micro-Data-Lake' infrastructure for project
