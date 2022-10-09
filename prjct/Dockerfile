@@ -1,10 +1,10 @@
-FROM apache/airflow:2.3.4-python3.9
+FROM apache/airflow:2.3.4
 
 # Update and install system packages
 USER root
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends python3-venv python3-pip gcc libc6-dev libcurl4-openssl-dev libssl-dev libkrb5-dev \
+  && apt-get install -y --no-install-recommends python3-venv python3-pip s3fs gcc libc6-dev libcurl4-openssl-dev libssl-dev libkrb5-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

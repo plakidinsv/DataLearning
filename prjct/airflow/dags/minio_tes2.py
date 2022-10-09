@@ -20,7 +20,7 @@ with DAG(
     task1 = S3KeySensor(
         task_id='sensor_minio_s3',
         bucket_name='miniobucket',
-        bucket_key='data.csv',
+        bucket_key="test/my-test-upload-file.txt",
         aws_conn_id='minio_conn',
         mode='poke',
         poke_interval=5,

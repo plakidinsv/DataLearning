@@ -1,6 +1,7 @@
 import os
 import pandas as pd
-from sqlachemy import create_engine
+from sqlalchemy import create_engine
+import psycopg2 as pg
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
@@ -10,6 +11,7 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 
 def convert_file(ds, **kwargs):
     # Upload files from local to MinIO
+    # adds year column and some cleaning on fly
     source = os.listdir('./Source')
     for file in source:
         if file.endswith('.xls'):            
@@ -46,18 +48,17 @@ def copy_file(ds, **kwargs):
                 dest_bucket_name='prjct.transfom.bucket')
 
 def copy_data_to_postgres():
-    pass
-    engine = create_engine('postgresql+psycopg2://postgres:postgres@host.docker.internal:9000/crime_schema')
-    bucket_name='prjct.transfom.data'
+    engine = create_engine('postgresql+psycopg2://postgres:postgres@host.docker.internal:5432/crime')
+    bucket_name='prjct.transfom.bucket'
     s3 = S3Hook('minio_conn')
-    source_keys=s3.list_keys(bucket_name = bucket_name)
+    source_keys=s3.list_keys(bucket_name = 'prjct.transfom.bucket')
 
     # Create an iterable that will read "chunksize=1000" rows
     # at a time from the CSV file    
     for file in source_keys:
-        for df in pd.read_csv(f's3://{bucket_name}/{file}', names=columns, chunksize=1000, header=None):
+        for df in pd.read_csv(f's3://prjct.transfom.bucket/{file}', chunksize=1000, header=None):
           df.to_sql(
-            name = 'crime_schema', 
+            name = 'crime', 
             con = engine,
             index=False,
             if_exists='append' 
@@ -96,18 +97,18 @@ with DAG (dag_id='load_local_to_minio',
         sql = "sql/crime_schema.sql"
     )
 
+    t5 = PythonOperator(
+        task_id = 'copy_raw_data_to_db',
+        provide_context = True,
+        python_callable = copy_data_to_postgres
+    )
 
-
-
-
-
-t1 >> t2 >> t3 >> t4 
+t1 >> t2 >> t3 >> t4 >> t5
 
 
 ''' 
 *** NEXT STEPS*** 
 
-creating tables in postgres db
-adding data to db
+load data from s3 to db
 dbt task
 '''
