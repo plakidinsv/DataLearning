@@ -10,4 +10,5 @@ prjct/airflow/logs/
 prjct/airflow/dags/__pycache__/
 prjct/airflow/dbt/logs/
 prjct/airflow/dbt/crime_spreading/logs/
-
+prjct/.ipynb_checkpoints
+prjct/.superset

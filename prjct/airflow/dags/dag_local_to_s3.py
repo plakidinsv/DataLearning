@@ -73,7 +73,8 @@ def copy_raw_data_to_db(ds, **kwargs):
               if_exists='append')
 
 
-with DAG (dag_id='load_local_to_minio',
+with DAG (dag_id='load_local_xls_to_s3_to_postgres',
+        default_args=default_args,
         start_date=datetime(2022, 8, 25),  
         schedule_interval=None,
         catchup=False,
@@ -116,7 +117,5 @@ t1 >> t2 >> t3 >> t4 >> t5
 
 ''' 
 *** NEXT STEPS*** 
-
-load data from s3 to db
 dbt task
 '''

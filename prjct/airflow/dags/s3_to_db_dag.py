@@ -32,6 +32,7 @@ def copy_raw_data_to_db(ds, **kwargs):
 
 
 with DAG (dag_id='minio_to_postgres',
+        default_args=default_args,
         start_date=datetime(2022, 8, 25),  
         schedule_interval=None,
         catchup=False,

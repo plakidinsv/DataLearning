@@ -12,6 +12,10 @@ from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
 
 
+default_args = {
+    'owner': 'plsv'
+}
+
 def copy_raw_data_to_db(ds, **kwargs):
     engine = create_engine("postgresql+psycopg2://postgres:postgres@host.docker.internal:5431/postgres")
     source_bucket_name = 'prjct.transfom.bucket'
@@ -35,6 +39,7 @@ def copy_raw_data_to_db(ds, **kwargs):
 
 
 with DAG (dag_id='s3_to_db',
+        default_args=default_args,
         start_date=datetime(2022, 8, 25),  
         schedule_interval=None,
         catchup=False,
