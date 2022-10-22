@@ -8,7 +8,7 @@ Goal of CSProject are:
 
 ###### Steps for CSProject:
 
-- [ ] 1. Finding relevant data from different sources whatever type of dataset and storaging to the project 'data source'  (original data source https://ucr.fbi.gov/crime-in-the-u.s/)
+- [x] 1. Finding relevant data from different sources whatever type of dataset and storaging to the project 'data source'  (original data source https://ucr.fbi.gov/crime-in-the-u.s/)
 - [ ] 2. Extracting data to the object storage 
 - [ ] 3. Cleaning and conforming data (errors, deduplication, etc.) 
 - [ ] 4. Definding data model
