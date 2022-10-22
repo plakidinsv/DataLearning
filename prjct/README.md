@@ -9,11 +9,11 @@ Goal of CSProject are:
 ###### Steps for CSProject:
 
 - [x] 1. Finding relevant data from different sources whatever type of dataset and storaging to the project 'data source'  (original data source https://ucr.fbi.gov/crime-in-the-u.s/)
-- [ ] 2. Extracting data to the object storage 
-- [ ] 3. Cleaning and conforming data (errors, deduplication, etc.) 
-- [ ] 4. Definding data model
+- [x] 2. Extracting data to the object storage 
+- [x] 3. Cleaning and conforming data (errors, deduplication, etc.) 
+- [x] 4. Definding data model
 - [ ] 5. Transform data
-- [ ] 6. Load data to DWH
+- [x] 6. Load data to DWH
 - [ ] 7. Making a data visualization
 
 ###### Tools:
