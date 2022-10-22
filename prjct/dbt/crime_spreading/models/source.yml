@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: raw_crime_spreading
+    database: postgres
+    schema: public
+    tables:
+      - name: crime

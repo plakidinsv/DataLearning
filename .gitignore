@@ -12,3 +12,4 @@ prjct/airflow/dbt/logs/
 prjct/airflow/dbt/crime_spreading/logs/
 prjct/.ipynb_checkpoints
 prjct/.superset
+prjct/dbt/crime_spreading/logs

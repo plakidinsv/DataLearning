@@ -1,4 +1,6 @@
 
+  
+    
 
   create  table "postgres"."dbt_crimespread"."my_first_dbt_model__dbt_tmp"
   as (
@@ -29,3 +31,4 @@ from source_data
 
 -- where id is not null
   );
+  

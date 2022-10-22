@@ -1,3 +1,6 @@
+dbt-core
+dbt-postgres
+Jinja2==2.11.3
 JayDeBeApi==1.2.3
 Werkzeug==1.0.1
 apache-airflow-providers-amazon==5.0.0
@@ -6,6 +9,7 @@ apache-airflow-providers-jdbc==3.2.0
 apache-airflow-providers-odbc==3.1.1
 apache-airflow-providers-postgres==2.4.0
 apache-airflow-providers-redis==2.0.1
+apache-airflow-providers-tableau==2.1.2
 apache-airflow-providers-common-sql==1.1.0
 boto3==1.18.65
 boto==2.49.0
@@ -17,7 +21,9 @@ pyarrow==5.0.0
 pyOpenSSL==20.0.1
 psycopg2-binary==2.9.2
 redis==3.5.3
+redshift-connector==2.0.901
 sshtunnel==0.4.0
+tableauserverclient==0.17.0
 virtualenv==20.10.0
 cloudpathlib[s3,gs,azure]
 apache-airflow-providers-yandex==3.1.0
