@@ -182,7 +182,7 @@ services:
 
   # relational database
   postgres-db:
-    image: 'postgres:14-bullseye' 
+    image: postgis/postgis:14-3.3
     environment:
         POSTGRES_USER: 'postgres'
         POSTGRES_PASSWORD: 'postgres'

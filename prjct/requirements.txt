@@ -24,5 +24,7 @@ apache-airflow-providers-yandex==3.1.0
 yandexcloud==0.183.0
 xlrd==2.0.1
 s3fs
+geopandas
+GeoAlchemy2
 
 

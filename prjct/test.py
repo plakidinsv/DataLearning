@@ -1,8 +1,25 @@
 import os
 import pandas as pd
 from pathlib import Path
+import geopandas as gpd
+from sqlalchemy import create_engine
 
 source = os.listdir('./test')
+file = 'cb_2019_us_county_20m.shp'
+db_connection_url = "postgresql://postgres:1@localhost:5432/geo"
+con = create_engine(db_connection_url)
+
+# read in the data
+gdf = gpd.read_file('test/cb_2019_us_county_20m.shp')
+
+# Drop nulls in the geometry column
+print('Dropping ' + str(gdf.geometry.isna().sum()) + ' nulls.')
+gdf = gdf.dropna(subset=['geometry'])
+
+# Push the geodataframe to postgresql
+gdf.to_postgis("redlining", con, index=False, if_exists='replace') 
+
+
 
 for file in source:
     cleanfilename=file.replace('.xls', '')
@@ -78,3 +95,6 @@ for file in source:
 l = 'arson1'
 l = l.replace('1', '')
 print(l.isalpha(), l)
+
+
+

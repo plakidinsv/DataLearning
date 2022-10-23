@@ -6,3 +6,6 @@ sources:
     schema: public
     tables:
       - name: crime
+      - name: us_zip
+      - name: us_county_2019
+
