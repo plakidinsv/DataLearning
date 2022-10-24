@@ -1,2 +1,2 @@
 # DataLearning
-This repo includes results of different courses and pet-projects
+The repo includes results of different courses and pet-projects
