@@ -26,19 +26,25 @@ S3 object storaje: minIO
 
 ## Creating 'Micro-Data-Lake' infrastructure for project
 
-1. Initialize the metadata db
+2. Building images
+
+```shell
+docker compose build
+```
+
+2. Initialize the metadata db
 
 ```shell
 docker compose run --rm airflow-cli db init
 ```
 
-2. Create an admin user
+3. Create an admin user
 
 ```shell
 docker compose run --rm airflow-cli users create --email airflow@example.com --firstname airflow --lastname airflow --password airflow --username airflow --role Admin
 ```
 
-3. Start all services
+4. Start all services
 
 ```shell
 docker compose up -d
