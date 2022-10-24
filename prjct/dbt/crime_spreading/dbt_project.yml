@@ -34,3 +34,9 @@ models:
     staging:      
       +materialized: table
       +schema: staging_crimespread
+
+seeds:
+  crime_spreading:
+    +enabled: true
+    +schema: seed_data
+
