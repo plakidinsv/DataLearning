@@ -1,4 +1,4 @@
-with us_zip as(
+with source as(
 
     select * from "postgres"."public"."us_zip"
 

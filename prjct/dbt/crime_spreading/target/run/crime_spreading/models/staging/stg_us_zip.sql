@@ -2,9 +2,9 @@
   
     
 
-  create  table "postgres"."staging_crimespread"."us_zip__dbt_tmp"
+  create  table "postgres"."staging_crimespread"."stg_us_zip__dbt_tmp"
   as (
-    with us_zip as(
+    with source as(
 
     select * from "postgres"."public"."us_zip"
 

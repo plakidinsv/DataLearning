@@ -1,6 +1,6 @@
-with uscities as (
+with source as (
 
-    select * from "postgres"."seed_data"."uscities"
+    select * from {{ ref('uscities') }}
 
 ),
 
@@ -11,7 +11,7 @@ final as (
         , lower(state_name) as state_name
         , lower(county_name) as county_name
         , county_fips::text
-    from uscities
+    from source
 
 )
 

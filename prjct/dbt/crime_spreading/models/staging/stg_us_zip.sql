@@ -1,4 +1,4 @@
-with us_zip as(
+with source as(
 
     select * from {{ source('raw_data', 'us_zip') }}
 
@@ -6,7 +6,7 @@ with us_zip as(
 
 final as (
 
-    select * from us_zip
+    select * from source
 
 )
 

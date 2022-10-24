@@ -2,14 +2,85 @@ version: 2
 
 sources:
   - name: raw_data
-    description: >
-      This is a replica data: FBI statistic, geo, administrative boundaries
+    description: This is a replica data of FBI statistic, geo, administrative boundaries
     database: postgres
     schema: public
     tables:
       - name: crime
         descriptioin: FBI data. Includes aggregated columns
+        columns:
+          - name: state
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true
+          - name: city
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                       
+          - name: population
+            tests:
+              - not_null
+          - name: violent_crime
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                         
+          - name: murder_and_nonnegligent_manslaughter
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                          
+          - name: forcible_rape
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                        
+          - name: robbery
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                        
+          - name: aggravated_assault
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                
+          - name: property_crime
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                                    
+          - name: burglary
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                          
+          - name: larceny_theft
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                          
+          - name: motor_vehicle_theft
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                          
+          - name: arson
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                          
+          - name: year
+            tests:
+              - not_null:
+                  config:
+                    store_failures: true                          
+
       - name: us_zip
         description: Postal data. Bad for project porposes because same ton might be in different counties
+        test:
       - name: us_county_2019
         descroption: Geo data for data vizualisation
+        test:

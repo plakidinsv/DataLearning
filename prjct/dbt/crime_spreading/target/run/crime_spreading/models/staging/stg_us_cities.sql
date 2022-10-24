@@ -2,9 +2,9 @@
   
     
 
-  create  table "postgres"."staging_crimespread"."us_cities__dbt_tmp"
+  create  table "postgres"."staging_crimespread"."stg_us_cities__dbt_tmp"
   as (
-    with uscities as (
+    with source as (
 
     select * from "postgres"."seed_data"."uscities"
 

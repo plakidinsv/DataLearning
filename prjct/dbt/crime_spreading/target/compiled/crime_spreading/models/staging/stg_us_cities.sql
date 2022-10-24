@@ -1,6 +1,6 @@
-with uscities as (
+with source as (
 
-    select * from {{ ref('uscities') }}
+    select * from "postgres"."seed_data"."uscities"
 
 ),
 
