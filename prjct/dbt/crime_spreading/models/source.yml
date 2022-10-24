@@ -2,10 +2,14 @@ version: 2
 
 sources:
   - name: raw_data
+    description: >
+      This is a replica data: FBI statistic, geo, administrative boundaries
     database: postgres
     schema: public
     tables:
       - name: crime
+        descriptioin: FBI data. Includes aggregated columns
       - name: us_zip
+        description: Postal data. Bad for project porposes because same ton might be in different counties
       - name: us_county_2019
-
+        descroption: Geo data for data vizualisation

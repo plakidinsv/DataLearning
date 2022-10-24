@@ -35,6 +35,7 @@ x-superset-volumes: &superset-volumes
   - .superset/superset_home:/app/superset_home
 
 services:
+  # airflow services
   postgres:
     image: postgres:13
     environment:

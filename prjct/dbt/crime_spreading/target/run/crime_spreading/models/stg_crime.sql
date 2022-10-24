@@ -2,10 +2,10 @@
   
     
 
-  create  table "postgres"."dbt_crimespread"."stg_crime__dbt_tmp"
+  create  table "postgres"."public"."stg_crime__dbt_tmp"
   as (
-    select "state",
-  "city",
+    select "state_name",
+  "city_name",
   "population",
   "murder_and_nonnegligent_manslaughter",
   "forcible_rape",
@@ -16,6 +16,6 @@
   "motor_vehicle_theft",
   "arson",
   "year"
-from "postgres"."dbt_crimespread"."crime"
+from "postgres"."staging_crimespread"."crime"
   );
   
