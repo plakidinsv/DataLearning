@@ -1,7 +1,9 @@
 
     
     
-    truncate table "postgres"."seed_data"."uscities";
+    
+    create table "postgres"."seed_data"."uscities" ("city" text,"city_ascii" text,"state_id" text,"state_name" text,"county_fips" varchar(5),"county_name" text,"lat" float8,"lng" float8,"population" int4,"density" float8,"source" text,"military" bool,"incorporated" bool,"timezone" text,"ranking" int4,"zips" text,"id" int4)
+  ;
     -- dbt seed --
     
           insert into "postgres"."seed_data"."uscities" ("city", "city_ascii", "state_id", "state_name", "county_fips", "county_name", "lat", "lng", "population", "density", "source", "military", "incorporated", "timezone", "ranking", "zips", "id") values

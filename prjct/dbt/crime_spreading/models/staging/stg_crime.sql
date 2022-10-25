@@ -1,9 +1,6 @@
 with source as (
-
     select * from {{ source('raw_data', 'crime') }}
-
 ),
-
 final as (
     select 
         lower(state) as state_name
@@ -21,5 +18,4 @@ final as (
     from source
     where city is not null
 )
-
 select * from final

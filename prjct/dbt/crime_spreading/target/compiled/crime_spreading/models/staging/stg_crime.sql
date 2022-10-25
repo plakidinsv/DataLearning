@@ -1,9 +1,6 @@
 with source as (
-
     select * from "postgres"."public"."crime"
-
 ),
-
 final as (
     select 
         lower(state) as state_name
@@ -18,8 +15,7 @@ final as (
         , coalesce(motor_vehicle_theft, 0) as motor_vehicle_theft
         , coalesce(arson, 0) as arson
         , year
-    from crime
+    from source
     where city is not null
 )
-
 select * from final
