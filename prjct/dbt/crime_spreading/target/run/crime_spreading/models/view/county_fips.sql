@@ -1,8 +1,10 @@
-with geo_county_2019 as (
-    select * from {{ ref('stg_us_county_2019') }}
+
+  create view "postgres"."staging_crimespread"."county_fips__dbt_tmp" as (
+    with geo_county_2019 as (
+    select * from "postgres"."staging_crimespread"."stg_us_county_2019"
 ),
 us_cities as (
-    select * from {{ ref('stg_us_cities') }}
+    select * from "postgres"."staging_crimespread"."stg_us_cities"
 ),
 county_fips as (
     select 
@@ -15,3 +17,4 @@ county_fips as (
     left join us_cities
     using(county_fips)
 );
+  );

@@ -1,14 +1,20 @@
-with crime as (
-    select * from {{ ref('stg_crime') }}
+
+  
+    
+
+  create  table "postgres"."public"."adm_new__dbt_tmp"
+  as (
+    with crime as (
+    select * from "postgres"."staging_crimespread"."stg_crime"
 ),
 city_ext as (
-    select * from {{ ref('stg_city_state_county_ext') }}
+    select * from "postgres"."staging_crimespread"."stg_city_state_county_ext"
 ),
 geo_county_2019 as (
-    select * from {{ ref('stg_us_county_2019') }}
+    select * from "postgres"."staging_crimespread"."stg_us_county_2019"
 ),
 us_cities as (
-    select * from {{ ref('stg_us_cities') }}
+    select * from "postgres"."staging_crimespread"."stg_us_cities"
 ),
 crime_city_ext_nulls as (
     select  crime.state_name
@@ -32,3 +38,5 @@ crime_ext_us_cities as (
 )
 
 select * from crime_ext_us_cities
+  );
+  

@@ -1,8 +1,8 @@
 with geo_county_2019 as (
-    select * from {{ ref('stg_us_county_2019') }}
+    select * from "postgres"."staging_crimespread"."stg_us_county_2019"
 ),
 us_cities as (
-    select * from {{ ref('stg_us_cities') }}
+    select * from "postgres"."staging_crimespread"."stg_us_cities"
 ),
 county_fips as (
     select 
