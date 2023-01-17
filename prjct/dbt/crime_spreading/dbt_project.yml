@@ -73,4 +73,19 @@ seeds:
         latitude: float8
         longitude: float8
         county: text
+    upsale:
+      +column_types:
+        ID: int
+        DT: date
+        Manager_ID: int
+        CLIENT_ID: int
+        CALL_ID: int
+        FACTOR_ID: int
+        RESULT: bool
+    managers:
+      +column_types:
+        ID: int
+        LOGIN: text
+        NAME: text
+        OFFICE: int
 

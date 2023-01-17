@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS crime(
     larceny_theft INT, 
     motor_vehicle_theft INT,
     arson int,
-    year date
+    year int
     );

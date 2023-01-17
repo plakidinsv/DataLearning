@@ -23,7 +23,7 @@ def convert_file(ds, **kwargs):
         if file.endswith('.xls'):            
             df = pd.read_excel(f'./Source/{file}')
             df.columns = df.columns.str.lower().str.replace("\n", " ").str.replace(" ", "_").str.replace("\d", "")
-            df = df.assign(year=file[-8:-4]+'-12'+'-31')
+            df = df.assign(year=file[-8:-4])
             df['year'] = pd.to_datetime(df['year'])
             df['state'] = df['state'].str.replace("\d", "")
             df['city'] = df['city'].str.replace("\d", "")

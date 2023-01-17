@@ -13,3 +13,10 @@ prjct/airflow/dbt/crime_spreading/logs/
 prjct/.ipynb_checkpoints
 prjct/.superset
 prjct/dbt/crime_spreading/logs
+inovis-trino/Infrastructure/airflow/dags/__pycache__
+inovis-trino/Infrastructure/airflow/logs
+inovis-trino/Infrastructure/conf
+inovis-trino/Infrastructure/minio
+inovis-trino/Infrastructure/postgres-db-volume
+inovis-trino/Infrastructure/postgres-dwh
+inovis-trino/Infrastructure/postgres-src

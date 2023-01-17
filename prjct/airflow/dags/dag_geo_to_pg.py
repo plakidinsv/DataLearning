@@ -43,13 +43,13 @@ def copy_raw_data_to_db(ds, **kwargs):
 
 
 def create_gis_dump_for_pg(ds, **kwargs):
-    source = os.listdir('./Source/geo')
+    source = os.listdir('./Source/geo/us_county_2019')
     file = 'cb_2019_us_county_20m.shp'
     db_connection_url = "postgresql+psycopg2://postgres:postgres@host.docker.internal:5431/postgres"
     con = create_engine(db_connection_url)
 
     # read in the data
-    gdf = gpd.read_file(f'./Source/geo/{file}')
+    gdf = gpd.read_file(f'./Source/geo/us_county_2019/{file}')
 
     # Drop nulls in the geometry column
     print('Dropping ' + str(gdf.geometry.isna().sum()) + ' nulls.')

@@ -9,7 +9,7 @@
 ),
 final as (
     select 
-        btrim(lower(regexp_replace(state, ',', '', 'g'))) as state_name
+        btrim(regexp_replace(lower(regexp_replace(state, ',', '', 'g')), 'neb.*ka', 'nebraska')) as state_name
         , btrim(regexp_replace(lower(regexp_replace(city, ',', '', 'g')), 'st\.', 'saint')) as city_name
         , coalesce(population, 0) as population
         , murder_and_nonnegligent_manslaughter

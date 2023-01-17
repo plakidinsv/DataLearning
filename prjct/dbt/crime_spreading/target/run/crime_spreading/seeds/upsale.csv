@@ -1,0 +1,14 @@
+
+    
+    
+    
+    create table "postgres"."seed_data"."upsale" ("ID" int,"DT" date,"Manager_ID" int,"CLIENT_ID" int,"CALL_ID" int,"FACTOR_ID" int,"RESULT" bool)
+  ;
+    -- dbt seed --
+    
+          insert into "postgres"."seed_data"."upsale" ("ID", "DT", "Manager_ID", "CLIENT_ID", "CALL_ID", "FACTOR_ID", "RESULT") values
+          (%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s),(%s,%s,%s,%s,%s,%s,%s)
+      
+
+;
+  

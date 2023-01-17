@@ -84,3 +84,5 @@ sources:
       - name: us_county_2019
         descroption: Geo data for data vizualisation
         test:
+      - name: us_state_2019
+        description: State geo data for vizualisation

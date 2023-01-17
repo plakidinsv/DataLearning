@@ -2,7 +2,7 @@
     
     
     
-    create table "postgres"."seed_data"."cities_extended_202210242353" ("city" text,"state_code" text,"zip" integer,"latitude" float8,"longitude" float8,"county" text)
+    create table "postgres"."seed_data"."cities_extended_202210242353" ("city" text,"state_code" text,"zip" int4,"latitude" float8,"longitude" float8,"county" text)
   ;
     -- dbt seed --
     
