@@ -34,10 +34,15 @@
 ###### Tools:
 
 Инфраструктура для решения поднята с помощью Docker
+
 Процесс ETL организован с помощью Apache Airflow (оркестратор) и Trino (distributed SQL query engine designed to query large data sets distributed over one or more heterogeneous data sources.)
+
 Базы данных sourse, mrr, stg, dwh - PostgreSQL (использована одна система для уменьшения количества докер образов).
+
 Примененные языки программирования: SQL, Python, Bash   
+
 Моделирование данных и визуализация: PowerBI (был установлен локально с подключением к dwh)
+
 
 ## Создание инфраструктуры проекта на основании docker-compose.yml
 
