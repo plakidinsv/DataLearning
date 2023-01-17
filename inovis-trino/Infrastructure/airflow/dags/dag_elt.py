@@ -11,7 +11,7 @@ default_args = {
     'start_date': datetime(2023, 1, 17),
     'depends_on_past': False,
     'retries': 1,
-    'retry_delay': timedelta(minutes=1)
+    'retry_delay': timedelta(seconds=20)
 }
 
 
@@ -92,8 +92,8 @@ def truncate_tables():
 # Create a DAG instance
 with DAG (dag_id='dag_etl',
         default_args=default_args,          
-        schedule_interval=None,
-        catchup=False,
+        schedule_interval='@hourly',
+        catchup=True,
         tags=['test'],
         on_failure_callback=dag_failure_callback,
         on_success_callback=dag_success_callback

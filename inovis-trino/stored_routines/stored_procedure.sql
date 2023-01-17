@@ -34,39 +34,9 @@ BEGIN
         EXCEPTION WHEN OTHERS THEN
             GET STACKED DIAGNOSTICS error_message = MESSAGE_TEXT;
             -- Добавляем информацию об ошибке в таблицу procedure_errors
-            INSERT INTO procedure_errors (name, execution_time, error_message)
-            VALUES (obj_name, NOW, error_message);
-        END;
-    END LOOP;
-END; 
-$$ LANGUAGE plpgsql
-
-
-    LOOP
-        BEGIN
-            IF obj.prokind = 'f' THEN
-                obj_type := 'function';
-            ELSE
-                obj_type := 'procedure';
-            END IF;
-            obj_name := obj.schema_name || '.' || obj.function_procedure_name;
-            obj_code := obj.function_procedure_code;
-            -- Добавляем информацию о функции/процедуре в таблицу stored_routines
-			IF EXISTS (SELECT 1 FROM public.stored_routines 
-      				   WHERE type = obj_type AND name = obj_name)
-				THEN 
-            	UPDATE public.stored_routines
-				SET code = obj_code
-				WHERE type = obj_type AND name = obj_name AND code != obj_code;
-			ELSE
-				INSERT INTO public.stored_routines (type, name, code)
-				VALUES (obj_type, obj_name, obj_code);
-			END IF;
-        EXCEPTION WHEN OTHERS THEN
-            GET STACKED DIAGNOSTICS error_message = MESSAGE_TEXT;
-            -- Добавляем информацию об ошибке в таблицу procedure_errors
             INSERT INTO public.procedure_errors (name, execution_time, error_message)
             VALUES (obj_name, NOW(), error_message);
         END;
     END LOOP;
 END; 
+$$ LANGUAGE plpgsql;
