@@ -1,18 +1,19 @@
-CREATE OR REPLACE FUNCTION most_popular_product() RETURNS text AS 
-$BODY$
+CREATE OR REPLACE FUNCTION most_popular_product() 
+RETURNS text 
+AS $$
+DECLARE top_product text;
 BEGIN
-    RETURN (
         WITH popular_products AS (
-            SELECT product_id, SUM(quantity) as total_quantity
+            SELECT product_id, SUM(qty) as total_quantity
             FROM fact_sales
             GROUP BY product_id
-            ORDER BY total_quantity DESC
+            ORDER BY SUM(qty) DESC
             LIMIT 1
         )
         SELECT name
+        INTO top_product 
         FROM popular_products
-        JOIN products ON products.id = popular_products.product_id
-    );
+        JOIN dim_products ON dim_products.id = popular_products.product_id;
+    RETURN top_product;
 END; 
-$BODY$
-LANGUAGE plpgsql ;
+$$ LANGUAGE plpgsql;
