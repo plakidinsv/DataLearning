@@ -13,49 +13,6 @@ default_args = {
     'retries': 1,
     'retry_delay': timedelta(seconds=20)
 }
-
-
-def dag_failure_callback(context):
-    log.info("DAG ID: %s", context['dag_run'].dag_id)
-    log.info("Task ID: %s", context['task_instance'].task_id)
-    log.info("Execution Time: %s", context['execution_date'])
-    log.info("Error: %s", context['exception'])
-    log.info("failure callback function called")
-    conn = PostgresHook(postgres_conn_id='postgres_dwh').get_conn()
-    log.info("connection: {}".format(conn))
-    cur = conn.cursor()
-    log.info("cursor: {}".format(cur))
-    try:
-        cur.execute(
-            "INSERT INTO dag_logs (dag_id, task_id, run_time, error_message) VALUES (%s, %s, %s)",
-            (context['dag_run'].dag_id, context['task_instance'].task_id, datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
-            context['exception'])
-        )
-    except Exception as e:
-            log.error("Error while logging the failure: %s", e)
-    finally:
-        cur.close()
-        conn.close()
-
-
-def dag_success_callback(context):
-    log.info("DAG ID: %s", context['dag_run'].dag_id)
-    log.info("Run ID: %s", context['dag_run'].run_id)
-    log.info("Execution Time: %s", context['execution_date'])
-    conn = PostgresHook(postgres_conn_id="your_conn_id").get_conn()
-    cur = conn.cursor()
-    try:
-        cur.execute(
-            "INSERT INTO dag_logs (dag_id, run_id, run_time) VALUES (%s, %s, %s)",
-            (context['dag_run'].dag_id, context['dag_run'].run_id, context['execution_date'])
-        )
-        conn.commit()
-    except Exception as e:
-        log.error("Error while logging the success: %s", e)
-    finally:
-        cur.close()
-        conn.close()
-
    
 def load_dwh_watermark():
     src = PostgresHook(postgres_conn_id='postgres_stg')
@@ -92,11 +49,9 @@ def truncate_tables():
 # Create a DAG instance
 with DAG (dag_id='dag_etl',
         default_args=default_args,          
-        schedule_interval='@hourly',
+        schedule_interval=None,
         catchup=True,
-        tags=['test'],
-        on_failure_callback=dag_failure_callback,
-        on_success_callback=dag_success_callback
+        tags=['test']
 ) as dag:
     
     copy_src_customers_to_mrr = TrinoOperator(
