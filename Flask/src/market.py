@@ -54,6 +54,7 @@ def products():
         db.session.commit()
 
         return jsonify({'id': product.id}), 201
+        
     elif request.method == 'GET':
         name = request.args.get('name')
         sort_by = request.args.get('sort_by', 'name')
