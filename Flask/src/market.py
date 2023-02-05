@@ -1,5 +1,3 @@
-import os
-import psycopg2
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -11,6 +9,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy()
 db.init_app(app)
 migrate = Migrate(app, db)
+
 
 class Product(db.Model):
     __tablename__ = 'product'
@@ -34,10 +33,12 @@ class Cart(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     product = db.relationship('Product', backref=db.backref('cart', lazy=True))
     quantity = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float, nullable=False)
 
-    def __init__(self, product_id, quantity):
+    def __init__(self, product_id, quantity, price):
         self.product_id = product_id
         self.quantity = quantity
+        self.price = price
 
     def __repr__(self):
         return f"<Cart {self.id}>"
@@ -54,38 +55,35 @@ def products():
         db.session.commit()
 
         return jsonify({'id': product.id}), 201
-        
+
     elif request.method == 'GET':
-        name = request.args.get('name')
-        sort_by = request.args.get('sort_by', 'name')
-        sort_order = request.args.get('sort_order', 'asc')
+        data = request.get_json()
+        name = data.get('name', None)
+        price_min = data.get("price_min", None)
+        price_max = data.get("price_max", None)        
 
-        query = Product.query
-
+        query = db.select(Product)
         if name:
-            query = query.filter(Product.name.like('%' + name + '%'))
-
-        if sort_by == 'price':
-            query = query.order_by(Product.price if sort_order == 'asc' else desc(Product.price))
-        else:
-            query = query.order_by(Product.name if sort_order == 'asc' else desc(Product.name))
-
-        products = query.all()
+            query = query.where(Product.name == name)
+        if price_min:
+            query = query.where(Product.price >= price_min)
+        if price_max:
+            query = query.where(Product.price <= price_max)
+        products = db.session.execute(query).all()
 
         return jsonify([{'id': product.id, 'name': product.name, 'price': product.price} for product in products]), 200
 
 @app.route('/shopping_cart', methods=['POST'])
 def add_to_cart():
     data = request.get_json()
-    product_id = data['product_id']
+    product_name = data['name']
     quantity = data['quantity']
 
-    product = Product.query.get(product_id)
-
+    product = db.session.execute(db.select(Product).where(Product.name == f'{product_name}')).scalar()
     if not product:
         return jsonify({'error': 'Product not found'}), 404
 
-    cart = Cart(product_id=product_id, quantity=quantity)
+    cart = Cart(product_id=product.id, quantity=quantity, price=product.price * quantity)
     db.session.add(cart)
     db.session.commit()
 
@@ -94,19 +92,23 @@ def add_to_cart():
 @app.route('/cart/<int:product_id>', methods=['PUT'])
 def update_cart(product_id):
         data = request.get_json()
+        product_id = data['id']
         quantity = data['quantity']
     
-        cart = Cart.query.filter_by(product_id=product_id).first()
+        cart = db.session.execute(db.select(Cart).where(Cart.product_id == f'{product_id}')).scalar()
+        product = db.session.execute(db.select(Product)
+                             .where(Product.id == f'{product_id}')).scalar()
     
         if not cart:
             return jsonify({'error': 'Product not found in shopping cart'}), 404
-    
-        cart.quantity = quantity
+
+        cart.quantity=quantity
+        cart.price=product.price * quantity
+        db.session.add(cart)
         db.session.commit()
     
         return jsonify({'id': cart.id}), 200
 
 if __name__ == '__main__':
-    db.create_all()
     app.run(debug=True)
 
