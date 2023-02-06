@@ -10,7 +10,7 @@ db = SQLAlchemy()
 db.init_app(app)
 migrate = Migrate(app, db)
 
-
+# определение сущности 'Product' - таблица 'product' в базе данных
 class Product(db.Model):
     __tablename__ = 'product'
 
@@ -25,6 +25,7 @@ class Product(db.Model):
     def __repr__(self):
         return f"<Product {self.name}>"
 
+# определение сущности 'Cart' - таблица 'cart' в базе данных
 class Cart(db.Model):
     __tablename__ = 'cart'
 
@@ -42,11 +43,13 @@ class Cart(db.Model):
     def __repr__(self):
         return f"<Cart {self.id}>"
 
+#создание сущностей (в случае их отсутствия в БД)
 with app.app_context():
     db.create_all()
 
 @app.route('/products', methods=['POST', 'GET'])
 def products():
+    # метод для добавления товара в таблицу 'product'
     if request.method == 'POST':
         data = request.get_json()
         product = Product(name=data['name'], price=data['price'])
@@ -55,6 +58,9 @@ def products():
 
         return jsonify({'id': product.id}), 201
 
+    # метод для получения данных по товару из таблицы 'product'. 
+    # Если запрос отправлен без параметров - возвращает список товаров из таблицы.
+    # Возможна фильтрация по имени, диапазону цен, сортировка по имени и цене в порядке убывания/возрастания
     elif request.method == 'GET':
         data = request.get_json()
         name = data.get('name', None)
@@ -94,7 +100,8 @@ def products():
         return jsonify([{'id': product.id, 'name': product.name, 'price': product.price} for product in products]), 200
 
 
-@app.route('/shopping_cart', methods=['POST'])
+# добавление товара в корзину
+@app.route('/cart/add', methods=['POST'])
 def add_to_cart():
     data = request.get_json()
     product_name = data['name']
@@ -110,15 +117,16 @@ def add_to_cart():
 
     return jsonify({'id': cart.id}), 201
 
-@app.route('/cart/<int:product_id>', methods=['PUT'])
-def update_cart(product_id):
+# измененеие данных в корзине
+@app.route('/cart/update', methods=['PUT'])
+def update_cart():
         data = request.get_json()
-        product_id = data['id']
+        product_name = data['name']
         quantity = data['quantity']
     
-        cart = db.session.execute(db.select(Cart).where(Cart.product_id == f'{product_id}')).scalar()
-        product = db.session.execute(db.select(Product).where(Product.id == f'{product_id}')).scalar()
-    
+        product = db.session.execute(db.select(Product).where(Product.name == f'{product_name}')).scalar()
+        cart = db.session.execute(db.select(Cart).where(Cart.product_id == f'{product.id}')).scalar()
+            
         if not cart:
             return jsonify({'error': 'Product not found in shopping cart'}), 404
 
