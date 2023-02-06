@@ -25,7 +25,6 @@ class Product(db.Model):
     def __repr__(self):
         return f"<Product {self.name}>"
 
-
 class Cart(db.Model):
     __tablename__ = 'cart'
 
@@ -60,18 +59,40 @@ def products():
         data = request.get_json()
         name = data.get('name', None)
         price_min = data.get("price_min", None)
-        price_max = data.get("price_max", None)        
+        price_max = data.get("price_max", None)
+        order_by = data.get("order_by", None)
+        order_by_dir = data.get("order_by_dir", None)
 
         query = db.select(Product)
         if name:
-            query = query.where(Product.name == name)
+            query = query.filter(Product.name == name)
         if price_min:
-            query = query.where(Product.price >= price_min)
+            query = query.filter(Product.price >= price_min)
         if price_max:
-            query = query.where(Product.price <= price_max)
-        products = db.session.execute(query).all()
+            query = query.filter(Product.price <= price_max)
+        if order_by:
+            col1 = Product.name if order_by[0] == 'name' else Product.price
+            if len(order_by) > 1:
+                col2 = Product.price if order_by[1] == 'price' else Product.name 
+                if order_by_dir:
+                    if order_by_dir[0] == 'desc':
+                        col1 = col1.desc()
+                    if len(order_by) > 1 and order_by_dir[1] == 'desc':
+                        col2 = col2.desc()          
+                query = query.order_by(col1, col2)
+            else:
+                if order_by_dir:
+                    if order_by_dir[0] == 'desc':
+                        col1 = col1.desc()
+                query = query.order_by(col1)
+                    
+        if not db.session.execute(query).scalar():
+            return jsonify({'error': 'Product not found'}), 404
 
+        products = db.session.execute(query).scalars()
+           
         return jsonify([{'id': product.id, 'name': product.name, 'price': product.price} for product in products]), 200
+
 
 @app.route('/shopping_cart', methods=['POST'])
 def add_to_cart():
@@ -96,8 +117,7 @@ def update_cart(product_id):
         quantity = data['quantity']
     
         cart = db.session.execute(db.select(Cart).where(Cart.product_id == f'{product_id}')).scalar()
-        product = db.session.execute(db.select(Product)
-                             .where(Product.id == f'{product_id}')).scalar()
+        product = db.session.execute(db.select(Product).where(Product.id == f'{product_id}')).scalar()
     
         if not cart:
             return jsonify({'error': 'Product not found in shopping cart'}), 404
