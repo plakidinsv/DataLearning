@@ -28,4 +28,10 @@ curl -H 'Content-Type: application/json' -X GET http://127.0.0.1:5000/products -
 curl -H 'Content-Type: application/json' -X POST http://127.0.0.1:5000/products -d '{"name": "Xaomi", "price": 10000}'
 '''
 
+Деактивация venv
+
+'''shell
+deactivate
+'''
+
 
