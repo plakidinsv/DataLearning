@@ -45,6 +45,8 @@ pip install -r requirements.txt
 flask . /flask-venv/Source/activate
 ```
 
+### ***Curl-запросы***
+
 Запрос к таблице products на поиск товара с наименованием 'Samsung' не дороже 13000 с упорядочиванием по наименованию и цене в порядке убывания
 
 ```shell
@@ -57,7 +59,7 @@ curl -H 'Content-Type: application/json' -X GET http://127.0.0.1:5000/products -
 curl -H 'Content-Type: application/json' -X POST http://127.0.0.1:5000/products -d '{"name": "Samsung", "price": 10000}'
 ```
 
-Деактивация venv
+### ***Деактивация venv***
 
 ```shell
 deactivate
