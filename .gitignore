@@ -1,5 +1,6 @@
 
 *.tar
+*.code-workspace
 micro-data-lake-master/
 prjct/postgres-db-volume/
 prjct/postgres/
