@@ -1,0 +1,2 @@
+FLASK_APP=src\market
+FLASK_DEBUG=True
