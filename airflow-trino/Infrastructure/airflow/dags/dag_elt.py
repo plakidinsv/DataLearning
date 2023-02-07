@@ -1,5 +1,6 @@
 from airflow import DAG
 from datetime import datetime, timedelta
+import pendulum
 from airflow.providers.trino.operators.trino import TrinoOperator
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python_operator import PythonOperator
@@ -49,9 +50,17 @@ def truncate_tables():
 # Create a DAG instance
 with DAG (dag_id='dag_etl',
         default_args=default_args,          
+<<<<<<< Updated upstream:airflow-trino/Infrastructure/airflow/dags/dag_elt.py
         schedule_interval=None,
         catchup=True,
         tags=['test']
+=======
+        schedule_interval='@hourly',
+        catchup=True,
+        tags=['test'],
+        on_failure_callback=dag_failure_callback,
+        on_success_callback=dag_success_callback
+>>>>>>> Stashed changes:inovis-trino/Infrastructure/airflow/dags/dag_elt.py
 ) as dag:
     
     copy_src_customers_to_mrr = TrinoOperator(

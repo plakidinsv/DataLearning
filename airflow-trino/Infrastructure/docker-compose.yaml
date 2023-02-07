@@ -138,6 +138,22 @@ services:
     volumes:
       - ./trino/etc:/usr/lib/trino/etc:ro
       - ./trino/catalog:/etc/trino/catalog
+  
+  minio:
+    image: 'bitnami/minio:2022'
+    environment:
+        MINIO_ROOT_USER: admin
+        MINIO_ROOT_PASSWORD: password
+    ports:
+        - '9000:9000'
+        - '9001:9001'
+    volumes:
+        - './minio/data:/data'
+    healthcheck:
+        test: ["CMD", "curl", "-f", "http://myminio:9000/minio/health/live"]
+        interval: 30s
+        timeout: 20s
+        retries: 3
 
   mariadb:
     image: 'mariadb:latest'
@@ -187,3 +203,4 @@ volumes:
   pgadmin:
   airflow:
   trino:
+  minio:

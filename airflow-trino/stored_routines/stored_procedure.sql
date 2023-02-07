@@ -20,8 +20,13 @@ BEGIN
             END IF;
             obj_name := obj.schema_name || '.' || obj.function_procedure_name;
             obj_code := obj.function_procedure_code;
+<<<<<<< Updated upstream:airflow-trino/stored_routines/stored_procedure.sql
             -- Добавляем информацию о функции/процедуре в таблицу stored_routines            
             IF EXISTS (SELECT 1 FROM public.stored_routines 
+=======
+            -- Добавляем информацию о функции/процедуре в таблицу stored_routines
+			IF EXISTS (SELECT 1 FROM public.stored_routines 
+>>>>>>> Stashed changes:inovis-trino/stored_routines/stored_procedure.sql
       				   WHERE type = obj_type AND name = obj_name)
 				THEN 
             	UPDATE public.stored_routines
@@ -39,4 +44,10 @@ BEGIN
         END;
     END LOOP;
 END; 
+<<<<<<< Updated upstream:airflow-trino/stored_routines/stored_procedure.sql
 $$ LANGUAGE plpgsql;
+=======
+$$ LANGUAGE plpgsql;
+
+
+>>>>>>> Stashed changes:inovis-trino/stored_routines/stored_procedure.sql
