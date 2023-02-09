@@ -49,7 +49,7 @@ pip install -r requirements.txt
 curl -H 'Content-Type: application/json' -X GET http://127.0.0.1:5000/products -d '{"name": "Samsung", "price_max": 15000, "order_by": ["name", "price"], "order_by_dir": ["desc", "desc"]}'
 ```
 
-Запрос к таблице products на добавление товара с наименованием 'Samsung' стоимостью 12500
+Запрос к таблице products на добавление товара с наименованием 'Samsung' стоимостью 10000
 
 ```shell
 curl -H 'Content-Type: application/json' -X POST http://127.0.0.1:5000/products -d '{"name": "Samsung", "price": 10000}'
