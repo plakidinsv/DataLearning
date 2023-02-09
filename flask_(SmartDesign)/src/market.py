@@ -30,7 +30,7 @@ class Product(db.Model):
     def __repr__(self):
         return f"<Product {self.name}>"
 
-# определение сущности 'Cart' - таблица 'cart' в базе данных
+
 class Cart(db.Model):
     """
     Модель 'Cart' - таблица 'cart' в базе данных
@@ -57,7 +57,7 @@ class Cart(db.Model):
     def __repr__(self):
         return f"<Cart {self.id}>"
 
-#создание сущностей (в случае их отсутствия в БД)
+
 with app.app_context():
     db.create_all()
 
@@ -116,7 +116,7 @@ def products():
             return jsonify({'error': 'Product not found'}), 404
 
         products = db.session.execute(query).scalars()
-           
+
         return jsonify([{'id': product.id, 'name': product.name, 'price': product.price} for product in products]), 200
 
 

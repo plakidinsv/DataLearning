@@ -71,7 +71,6 @@ docker compose run --rm airflow-cli users create --email airflow@example.com --f
 docker compose up -d
 ```
 
-Поскольку подные контейнеры используют большой объем ресурсов ПК и не всегда используются одновременно, было бы рациональнее использовать Kubernetes.
 
 
 ## Описание ETL процесса
