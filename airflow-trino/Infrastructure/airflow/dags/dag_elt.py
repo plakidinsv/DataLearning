@@ -6,15 +6,27 @@ from airflow.operators.empty import EmptyOperator
 from airflow.operators.python_operator import PythonOperator
 from airflow.hooks.postgres_hook import PostgresHook
 
-# Define default_args dict to pass to the DAG's constructor
-default_args = {
-    'owner': 'plsv',
-    'start_date': datetime(2023, 1, 17),
-    'depends_on_past': False,
-    'retries': 1,
-    'retry_delay': timedelta(seconds=20)
-}
-   
+
+def success_callback(context):
+    dag_run = context.get("dag_run")
+    task_instances = dag_run.get_task_instances()
+    print("These task instances succeeded:", task_instances)
+
+
+def failure_callback(context):
+    task_instance = context['task_instance']
+    error_message = str(context["exception"])
+    task_id = task_instance.task_id
+    dag_id = task_instance.dag_id
+    end_date = task_instance.end_date
+    print(f'Task {task_id} of DAG {dag_id} failed with message: {error_message} at {end_date}')
+    dest = PostgresHook(postgres_conn_id='postgres_dwh')
+    table = 'dag_logs'
+    rows = [(dag_id, task_id, end_date, error_message)]
+    cols = ['dag_id', 'task_id', 'run_time', 'error_message']
+    dest.insert_rows(table, rows = rows, target_fields = cols, commit_every = 0)
+
+
 def load_dwh_watermark():
     src = PostgresHook(postgres_conn_id='postgres_stg')
     dest = PostgresHook(postgres_conn_id='postgres_dwh')
@@ -46,21 +58,23 @@ def truncate_tables():
     cursor.close()
     conn.commit()
 
+# Define default_args dict to pass to the DAG's constructor
+default_args = {
+    'owner': 'plsv',
+    'start_date': datetime(2023, 1, 17),
+    'depends_on_past': False,
+    'retries': 1,
+    'retry_delay': timedelta(seconds=20),
+    'on_success_callback': success_callback,
+    'on_failure_callback': failure_callback
+}
 
 # Create a DAG instance
 with DAG (dag_id='dag_etl',
         default_args=default_args,          
-<<<<<<< Updated upstream:airflow-trino/Infrastructure/airflow/dags/dag_elt.py
         schedule_interval=None,
         catchup=True,
         tags=['test']
-=======
-        schedule_interval='@hourly',
-        catchup=True,
-        tags=['test'],
-        on_failure_callback=dag_failure_callback,
-        on_success_callback=dag_success_callback
->>>>>>> Stashed changes:inovis-trino/Infrastructure/airflow/dags/dag_elt.py
 ) as dag:
     
     copy_src_customers_to_mrr = TrinoOperator(
